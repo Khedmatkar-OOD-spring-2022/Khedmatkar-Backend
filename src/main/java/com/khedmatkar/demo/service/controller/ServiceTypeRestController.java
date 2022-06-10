@@ -1,5 +1,8 @@
-package com.khedmatkar.demo.service;
+package com.khedmatkar.demo.service.controller;
 
+import com.khedmatkar.demo.service.dto.ServiceTypeDTO;
+import com.khedmatkar.demo.service.entity.ServiceType;
+import com.khedmatkar.demo.service.repository.ServiceTypeRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
