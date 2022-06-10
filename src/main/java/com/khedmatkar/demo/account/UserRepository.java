@@ -1,4 +1,4 @@
-package com.khedmatkar.demo.repository;
+package com.khedmatkar.demo.account;
 
 import com.khedmatkar.demo.account.User;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.khedmatkar.demo.entity;
+package com.khedmatkar.demo.service;
 
 import lombok.Getter;
 import lombok.Setter;
