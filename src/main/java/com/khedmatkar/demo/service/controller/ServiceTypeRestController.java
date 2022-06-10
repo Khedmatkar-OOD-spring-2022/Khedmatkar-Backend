@@ -38,9 +38,8 @@ public class ServiceTypeRestController {
     }
 
     @GetMapping("/search")
-    public List<ServiceType> searchByName(@PathParam(value = "name") String prefix) {
-        System.out.println(prefix);
-        return serviceTypeRepository.findByNameStartsWith(prefix);
+    public List<ServiceType> searchByName(@PathParam(value = "name") String name) {
+        return serviceTypeRepository.findByNameStartsWith(name);
     }
 
     @PostMapping
@@ -64,7 +63,14 @@ public class ServiceTypeRestController {
     public void delete(@PathVariable Long id) {
         var optionalServiceType = serviceTypeRepository.findById(id);
         if (optionalServiceType.isPresent()) {
-            serviceTypeRepository.delete(optionalServiceType.get());
+            var serviceType = optionalServiceType.get();
+            if (!serviceTypeRepository.existsByParent(serviceType)) {
+                serviceTypeRepository.delete(serviceType);
+            } else {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "service type has other service types as children"
+                );
+            }
         } else {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "entity not found"

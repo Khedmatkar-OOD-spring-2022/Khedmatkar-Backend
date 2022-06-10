@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import java.util.Locale;
+
 @RestController
 public class RegistrationManager {
     private final UserRepository userRepository;
@@ -15,11 +18,16 @@ public class RegistrationManager {
 
 
     @PostMapping("/register")
-    public void registerUser(@RequestBody UserRegistrationDTO dto) {
+    public void registerUser(@RequestBody @Valid UserRegistrationDTO dto) {
+        var type = dto.type.toUpperCase();
+        var userType = UserType.valueOf(type);
         User user = User.builder()
                 .email(dto.email)
+                .firstName(dto.firstName)
+                .lastName(dto.lastName)
                 .plainPassword(dto.plainPassword)
                 .description(dto.description)
+                .type(userType)
                 .build();
         userRepository.save(user);
     }

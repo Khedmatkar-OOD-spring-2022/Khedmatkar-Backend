@@ -30,6 +30,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest'
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.7.0'
 }
 
 tasks.named('test') {

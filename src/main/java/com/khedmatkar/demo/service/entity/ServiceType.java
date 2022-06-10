@@ -1,21 +1,18 @@
 package com.khedmatkar.demo.service.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.khedmatkar.demo.AbstractEntity;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @Entity
-@SuperBuilder
 @NoArgsConstructor
+@SuperBuilder(toBuilder = true)
 @Getter
 @Setter
 @Table(name = "service_types")
-public class ServiceType {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ServiceType extends AbstractEntity {
 
     private String name;
 

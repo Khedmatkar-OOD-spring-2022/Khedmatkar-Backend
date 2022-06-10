@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> {
 
+    boolean existsByParent(ServiceType serviceType);
+
     List<ServiceType> findByNameStartsWith(String name);
 }

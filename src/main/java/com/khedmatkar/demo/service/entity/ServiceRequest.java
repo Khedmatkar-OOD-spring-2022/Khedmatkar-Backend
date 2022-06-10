@@ -1,0 +1,24 @@
+package com.khedmatkar.demo.service.entity;
+
+import com.khedmatkar.demo.AbstractEntity;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "service_requests")
+@NoArgsConstructor
+@Getter @Setter
+@SuperBuilder(toBuilder = true)
+public class ServiceRequest extends AbstractEntity {
+
+    @ManyToOne
+    private ServiceType serviceType;
+    private String description;
+    private String address;
+    private LocalDateTime dateTime;
+}
