@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "service_requests")
@@ -20,5 +19,4 @@ public class ServiceRequest extends AbstractEntity {
     private ServiceType serviceType;
     private String description;
     private String address;
-    private LocalDateTime dateTime;
 }
