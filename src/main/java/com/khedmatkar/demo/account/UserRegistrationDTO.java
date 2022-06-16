@@ -20,7 +20,7 @@ public class UserRegistrationDTO {
     public final String email;
 
     @NotEmpty
-    public final String plainPassword;
+    public final String password;
 
     public final String description;
 
