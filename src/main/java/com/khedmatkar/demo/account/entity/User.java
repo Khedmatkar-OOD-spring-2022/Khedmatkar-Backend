@@ -1,4 +1,4 @@
-package com.khedmatkar.demo.account;
+package com.khedmatkar.demo.account.entity;
 
 import com.khedmatkar.demo.AbstractEntity;
 import lombok.Getter;
@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Setter
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private UserType type;

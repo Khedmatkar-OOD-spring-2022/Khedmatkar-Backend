@@ -1,6 +1,6 @@
 package com.khedmatkar.demo.config;
 
-import com.khedmatkar.demo.account.UserRepository;
+import com.khedmatkar.demo.account.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 
@@ -40,7 +39,7 @@ class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.khedmatkar.demo.account.User user = userRepository.findByEmail(username)
+        com.khedmatkar.demo.account.entity.User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("username not found"));
 
         return User
