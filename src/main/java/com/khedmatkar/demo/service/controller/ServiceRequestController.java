@@ -3,7 +3,7 @@ package com.khedmatkar.demo.service.controller;
 import com.khedmatkar.demo.service.dto.ServiceRequestDTO;
 import com.khedmatkar.demo.service.entity.ServiceRequest;
 import com.khedmatkar.demo.service.repository.ServiceRequestRepository;
-import com.khedmatkar.demo.service.repository.ServiceTypeRepository;
+import com.khedmatkar.demo.service.repository.SpecialtyRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,17 +16,17 @@ import org.springframework.web.server.ResponseStatusException;
 public class ServiceRequestController {
 
     private final ServiceRequestRepository serviceRequestRepository;
-    private final ServiceTypeRepository serviceTypeRepository;
+    private final SpecialtyRepository specialtyRepository;
 
     public ServiceRequestController(ServiceRequestRepository serviceRequestRepository,
-                                    ServiceTypeRepository serviceTypeRepository) {
+                                    SpecialtyRepository specialtyRepository) {
         this.serviceRequestRepository = serviceRequestRepository;
-        this.serviceTypeRepository = serviceTypeRepository;
+        this.specialtyRepository = specialtyRepository;
     }
 
     @PostMapping("/")
     public void post(@RequestBody ServiceRequestDTO dto) {
-        var serviceType = serviceTypeRepository.findById(dto.serviceTypeId)
+        var specialty = specialtyRepository.findById(dto.specialtyId)
                 .orElseThrow(
                         () -> new ResponseStatusException(
                                 HttpStatus.BAD_REQUEST, "service type has other service types as children"
@@ -34,7 +34,7 @@ public class ServiceRequestController {
                 );
 
         var serviceRequest = ServiceRequest.builder()
-                .serviceType(serviceType)
+                .specialty(specialty)
                 .description(dto.description)
                 .address(dto.address)
                 .build();

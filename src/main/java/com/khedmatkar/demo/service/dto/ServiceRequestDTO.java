@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 
 public class ServiceRequestDTO {
     @NotNull
-    public Long serviceTypeId;
+    public Long specialtyId;
 
     public String description;
 

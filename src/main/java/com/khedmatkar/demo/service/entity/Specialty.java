@@ -11,11 +11,11 @@ import javax.persistence.*;
 @SuperBuilder(toBuilder = true)
 @Getter
 @Setter
-@Table(name = "service_types")
-public class ServiceType extends AbstractEntity {
+@Table(name = "specialties")
+public class Specialty extends AbstractEntity {
 
     private String name;
 
     @ManyToOne
-    private ServiceType parent;
+    private Specialty parent;
 }

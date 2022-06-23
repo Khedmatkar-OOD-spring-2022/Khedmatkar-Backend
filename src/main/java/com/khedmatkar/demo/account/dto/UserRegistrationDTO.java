@@ -1,4 +1,4 @@
-package com.khedmatkar.demo.account;
+package com.khedmatkar.demo.account.dto;
 
 import lombok.AllArgsConstructor;
 

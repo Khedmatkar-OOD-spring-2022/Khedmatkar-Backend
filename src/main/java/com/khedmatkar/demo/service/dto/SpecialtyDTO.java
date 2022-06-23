@@ -2,7 +2,7 @@ package com.khedmatkar.demo.service.dto;
 
 import javax.validation.constraints.NotBlank;
 
-public class ServiceTypeDTO {
+public class SpecialtyDTO {
 
     @NotBlank
     public String name;

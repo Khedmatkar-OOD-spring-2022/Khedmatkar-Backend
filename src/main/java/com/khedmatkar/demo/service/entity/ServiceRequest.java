@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class ServiceRequest extends AbstractEntity {
 
     @ManyToOne
-    private ServiceType serviceType;
+    private Specialty specialty;
     private String description;
     private String address;
 }
