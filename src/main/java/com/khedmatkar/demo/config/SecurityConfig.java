@@ -3,6 +3,7 @@ package com.khedmatkar.demo.config;
 import com.khedmatkar.demo.account.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -14,15 +15,16 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true
+)
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChainPPP(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                    .antMatchers("/**")
-                        .permitAll()
-                    .and()
                 .formLogin()
                     .and()
                 .logout()
@@ -51,7 +53,7 @@ class CustomUserDetailsService implements UserDetailsService {
         return User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
-                .roles(user.getType().toString())
+                .roles(user.getType().toString(), "USER")
                 .build();
     }
 }

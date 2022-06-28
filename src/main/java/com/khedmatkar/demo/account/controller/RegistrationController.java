@@ -1,13 +1,14 @@
 package com.khedmatkar.demo.account.controller;
 
 
-import com.khedmatkar.demo.account.dto.UserRegistrationDTO;
+import com.khedmatkar.demo.account.dto.UserProfileDTO;
 import com.khedmatkar.demo.account.entity.Customer;
 import com.khedmatkar.demo.account.entity.Specialist;
 import com.khedmatkar.demo.account.entity.User;
 import com.khedmatkar.demo.account.entity.UserType;
 import com.khedmatkar.demo.account.repository.CustomerRepository;
 import com.khedmatkar.demo.account.repository.SpecialistRepository;
+import com.khedmatkar.demo.account.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,20 +19,28 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 
 @RestController
-public class RegistrationManager {
+public class RegistrationController {
     private final CustomerRepository customerRepository;
     private final SpecialistRepository specialistRepository;
+    private final UserRepository userRepository;
 
-    public RegistrationManager(
+    public RegistrationController(
             CustomerRepository customerRepository,
-            SpecialistRepository specialistRepository) {
+            SpecialistRepository specialistRepository, UserRepository userRepository) {
         this.customerRepository = customerRepository;
         this.specialistRepository = specialistRepository;
+        this.userRepository = userRepository;
     }
 
 
     @PostMapping("/register")
-    public void registerUser(@RequestBody @Valid UserRegistrationDTO dto) {
+    public void registerUser(@RequestBody @Valid UserProfileDTO dto) {
+        if (userRepository.existsByEmail(dto.email)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "another user with this email exists"
+            );
+        }
+
         var user = fillUserInfo(dto);
         var userType = user.getType();
         if (UserType.CUSTOMER.equals(userType)) {
@@ -41,7 +50,7 @@ public class RegistrationManager {
         }
     }
 
-    public User fillUserInfo(UserRegistrationDTO dto) {
+    public User fillUserInfo(UserProfileDTO dto) {
         User user = null;
         UserType userType = null;
         String typeString = dto.type.toUpperCase();
