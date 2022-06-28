@@ -22,7 +22,7 @@ public class AbstractEntity {
 
     @Builder.Default
     @Column(unique = true)
-    private String uuid = UUID.randomUUID().toString();
+    private UUID uuid = UUID.randomUUID();
 
     @Builder.Default
     @CreationTimestamp

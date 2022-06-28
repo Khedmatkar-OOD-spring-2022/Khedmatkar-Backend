@@ -22,8 +22,6 @@ public class UserRegistrationDTO {
     @NotEmpty
     public final String password;
 
-    public final String description;
-
     @NotEmpty
     public final String type;
 }

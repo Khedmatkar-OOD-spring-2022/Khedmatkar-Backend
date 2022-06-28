@@ -65,7 +65,6 @@ public class RegistrationManager {
         user.setFirstName(dto.firstName);
         user.setLastName(dto.lastName);
         user.setPassword(encodedPassword);
-        user.setDescription(dto.description);
         user.setType(userType);
         return user;
     }
