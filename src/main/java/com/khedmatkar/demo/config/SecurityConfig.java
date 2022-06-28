@@ -18,11 +18,17 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChainPPP(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/**").permitAll()
-                .and()
+        http
+                .authorizeRequests()
+                    .antMatchers("/**")
+                        .permitAll()
+                    .and()
                 .formLogin()
-                .and()
-                .csrf().disable();
+                    .and()
+                .logout()
+                    .and()
+                .csrf()
+                    .disable();
         return http.build();
     }
 
@@ -45,7 +51,7 @@ class CustomUserDetailsService implements UserDetailsService {
         return User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
-                .roles("USER")
+                .roles(user.getType().toString())
                 .build();
     }
 }
