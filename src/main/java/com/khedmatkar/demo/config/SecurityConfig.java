@@ -27,6 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .formLogin()
+                    .usernameParameter("email")
                     .and()
                 .logout()
                     .and()
