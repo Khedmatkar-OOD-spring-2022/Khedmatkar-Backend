@@ -2,7 +2,7 @@ package com.khedmatkar.demo.service.dto;
 
 import javax.validation.constraints.NotNull;
 
-public class ServiceRequestDTO {
+public class ServiceRequestCreationDTO {
     @NotNull
     public Long specialtyId;
 
