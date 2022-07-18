@@ -9,13 +9,19 @@ import com.khedmatkar.demo.service.notdomain.CandidateSpecialistFinderStrategy;
 import com.khedmatkar.demo.service.repository.ServiceRequestRepository;
 import com.khedmatkar.demo.service.repository.ServiceRequestSpecialistRepository;
 import com.khedmatkar.demo.service.repository.SpecialtyRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 @Service
+@Slf4j
 public class ServiceRequestSpecialistFinderService {
     private final ServiceRequestRepository serviceRequestRepository;
     private final SpecialtyRepository specialtyRepository;
@@ -34,6 +40,8 @@ public class ServiceRequestSpecialistFinderService {
 
     @Transactional
     public void create(ServiceRequestCreationDTO dto) {
+        // todo: convert to a unique exception handling style
+
         var specialty = specialtyRepository.findById(dto.specialtyId)
                 .orElseThrow(
                         () -> new ResponseStatusException(
@@ -46,6 +54,7 @@ public class ServiceRequestSpecialistFinderService {
                 .description(dto.description)
                 .address(dto.address)
                 .status(ServiceRequestStatus.FINDING_SPECIALIST)
+                .receptionDate(dto.receptionDate)
                 .build();
         serviceRequestRepository.save(serviceRequest);
 

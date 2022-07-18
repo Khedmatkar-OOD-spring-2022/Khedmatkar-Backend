@@ -10,11 +10,6 @@ public interface SpecialistRepository extends JpaRepository<Specialist, Long> {
 
     Optional<Specialist> findByEmail(String email);
 
-    @Query(value = "select specialist from Specialist specialist order by RAND() limit 1;", nativeQuery = true)
+    @Query(value = "select * from specialists s inner join users u on s.id = u.id order by random() limit 1;", nativeQuery = true)
     Optional<Specialist> findRandomSpecialist();
-
-
-
-//    @Query("select specialist from Specialist specialist where specialist.id not serviceRequest.", )
-//    Optional<Specialist> getAllByRelatedServiceRequestsIdIn(ServiceRequest serviceRequest);
 }

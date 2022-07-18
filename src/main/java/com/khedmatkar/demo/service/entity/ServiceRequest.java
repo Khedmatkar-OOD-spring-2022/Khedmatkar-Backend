@@ -19,12 +19,14 @@ import java.util.List;
 @SuperBuilder(toBuilder = true)
 public class ServiceRequest extends AbstractEntity {
 
+    // todo: add ServiceDetails Object (See class diagram)
+
     @ManyToOne
     private Specialty specialty;
     private String description;
     private String address;
 
-    private Date date;
+    private Date receptionDate;
 
     @OneToOne
     private Customer customer;
