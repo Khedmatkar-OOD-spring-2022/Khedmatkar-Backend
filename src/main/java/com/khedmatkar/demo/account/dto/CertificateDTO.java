@@ -1,5 +1,5 @@
 package com.khedmatkar.demo.account.dto;
 
-public class SpecialistSpecialtyDTO {
+public class CertificateDTO {
     public Long specialtyId;
 }

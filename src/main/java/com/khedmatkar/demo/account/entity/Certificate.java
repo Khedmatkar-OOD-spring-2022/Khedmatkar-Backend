@@ -11,12 +11,12 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "specialty_certificates")
+@Table(name = "certificates")
 @SuperBuilder
 @NoArgsConstructor
 @Getter
 @Setter
-public class SpecialtyCertificate extends AbstractEntity {
+public class Certificate extends AbstractEntity {
 
     @ManyToOne
     private Specialist specialist;
