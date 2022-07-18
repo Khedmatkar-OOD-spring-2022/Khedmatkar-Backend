@@ -9,11 +9,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/specialties")
 public class SpecialtyRestController {
-
     private final SpecialtyRepository specialtyRepository;
 
     public SpecialtyRestController(SpecialtyRepository specialtyRepository) {
@@ -22,24 +22,30 @@ public class SpecialtyRestController {
 
 
     @GetMapping("/{id}")
-    public Specialty getById(@PathVariable Long id) {
-        var byId = specialtyRepository.findById(id);
-        if (byId.isPresent()) {
-            return byId.get();
-        }
-        throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "entity not found"
-        );
+    public SpecialtyDTO getById(@PathVariable Long id) {
+        var specialty = specialtyRepository.findById(id)
+                .orElseThrow(() ->
+                    new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "entity not found"
+                    )
+                );
+        return SpecialtyDTO.from(specialty);
     }
 
     @GetMapping("")
-    public List<Specialty> getAll() {
-        return specialtyRepository.findAll();
+    public List<SpecialtyDTO> getAll() {
+        return specialtyRepository.findAll()
+                .stream()
+                .map(SpecialtyDTO::from)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/search")
-    public List<Specialty> searchByName(@PathParam(value = "name") String name) {
-        return specialtyRepository.findByNameStartsWith(name);
+    public List<SpecialtyDTO> searchByName(@PathParam(value = "name") String name) {
+        return specialtyRepository.findByNameStartsWith(name)
+                .stream()
+                .map(SpecialtyDTO::from)
+                .collect(Collectors.toList());
     }
 
     @PostMapping
@@ -76,5 +82,13 @@ public class SpecialtyRestController {
                     HttpStatus.NOT_FOUND, "entity not found"
             );
         }
+    }
+
+    @GetMapping("/{id}/sub-specialties")
+    public List<SpecialtyDTO> getChildren(@PathVariable Long id) {
+        return specialtyRepository.findByParentId(id)
+                .stream()
+                .map(SpecialtyDTO::from)
+                .collect(Collectors.toList());
     }
 }

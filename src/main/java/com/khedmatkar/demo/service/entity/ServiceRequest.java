@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -22,6 +23,8 @@ public class ServiceRequest extends AbstractEntity {
     private Specialty specialty;
     private String description;
     private String address;
+
+    private Date date;
 
     @OneToOne
     private Customer customer;

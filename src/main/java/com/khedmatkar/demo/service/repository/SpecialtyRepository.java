@@ -10,4 +10,6 @@ public interface SpecialtyRepository extends JpaRepository<Specialty, Long> {
     boolean existsByParent(Specialty specialty);
 
     List<Specialty> findByNameStartsWith(String name);
+
+    List<Specialty> findByParentId(Long parentId);
 }
