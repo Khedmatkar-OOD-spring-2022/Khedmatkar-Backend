@@ -31,10 +31,7 @@ public class ServiceRequest extends AbstractEntity {
     @OneToOne
     private Customer customer;
 
-    @OneToOne
-    private Specialist specialist;
-
-    @OneToMany(mappedBy = "serviceRequest")
+    @OneToMany(mappedBy = "serviceRequest", cascade = CascadeType.REMOVE)
     private List<ServiceRequestSpecialist> specialistHistory;
 
     @Enumerated(EnumType.STRING)

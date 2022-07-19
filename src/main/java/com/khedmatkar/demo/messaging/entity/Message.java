@@ -10,16 +10,21 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 @Getter
 @Setter
+@Table(name = "messages")
 public class Message extends AbstractEntity {
 
     @ManyToOne
     private User sender;
 
     private String text;
+
+    @ManyToOne
+    private Chat chat;
 }

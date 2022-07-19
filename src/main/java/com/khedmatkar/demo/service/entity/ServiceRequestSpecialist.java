@@ -15,6 +15,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @SuperBuilder(toBuilder = true)
+@Table(name = "service_request_specialists") // todo: choose a better name
 public class ServiceRequestSpecialist extends AbstractEntity {
 
     @ManyToOne
@@ -26,6 +27,6 @@ public class ServiceRequestSpecialist extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private ServiceRequestSpecialistStatus status;
 
-    @OneToOne
+    @OneToOne(mappedBy = "serviceRequestSpecialist")
     private Chat chat;
 }
