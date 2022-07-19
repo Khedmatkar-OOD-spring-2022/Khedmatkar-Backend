@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/serviceRequest/history")
+@RequestMapping("api/serviceRequests")
 public class ServiceRequestHistoryController {
     private final AccountService accountService;
     private final ApplicationContext context;

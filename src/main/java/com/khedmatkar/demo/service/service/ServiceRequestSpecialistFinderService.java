@@ -1,5 +1,6 @@
 package com.khedmatkar.demo.service.service;
 
+import com.khedmatkar.demo.account.entity.Customer;
 import com.khedmatkar.demo.service.dto.ServiceRequestCreationDTO;
 import com.khedmatkar.demo.service.entity.ServiceRequest;
 import com.khedmatkar.demo.service.entity.ServiceRequestSpecialist;
@@ -12,13 +13,9 @@ import com.khedmatkar.demo.service.repository.SpecialtyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 @Service
 @Slf4j
@@ -39,7 +36,7 @@ public class ServiceRequestSpecialistFinderService {
     }
 
     @Transactional
-    public void create(ServiceRequestCreationDTO dto) {
+    public void create(ServiceRequestCreationDTO dto, Customer customer) {
         // todo: convert to a unique exception handling style
 
         var specialty = specialtyRepository.findById(dto.specialtyId)
@@ -50,6 +47,7 @@ public class ServiceRequestSpecialistFinderService {
                 );
 
         var serviceRequest = ServiceRequest.builder()
+                .customer(customer)
                 .specialty(specialty)
                 .description(dto.description)
                 .address(dto.address)

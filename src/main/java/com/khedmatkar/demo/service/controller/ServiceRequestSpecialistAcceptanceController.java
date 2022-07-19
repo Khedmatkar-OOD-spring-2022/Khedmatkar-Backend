@@ -23,7 +23,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
 @RestController
-@RequestMapping("api/serviceRequest")
+@RequestMapping("api/serviceRequests")
 public class ServiceRequestSpecialistAcceptanceController {
     private final AccountService accountService;
     private final ServiceRequestRepository serviceRequestRepository;
@@ -94,7 +94,7 @@ public class ServiceRequestSpecialistAcceptanceController {
 
 
     private ServiceRequestSpecialist getRelation(Specialist specialist, ServiceRequest serviceRequest) {
-        return serviceRequestSpecialistRepository.findBySpecialistAndServiceRequest(
-                specialist, serviceRequest).orElseThrow(ServiceRequestNotRelatedToSpecialistException::new);
+        return serviceRequestSpecialistRepository.findFirstByServiceRequestAndSpecialistOrderByCreationDesc(
+                serviceRequest, specialist).orElseThrow(ServiceRequestNotRelatedToSpecialistException::new);
     }
 }

@@ -27,6 +27,10 @@ import javax.transaction.Transactional;
 @RestController
 @RequestMapping("/api/serviceRequests")
 public class ServiceRequestCustomerController {
+    // todo: refactor this class and ServiceRequestCustomerController to code remove duplicates
+    // todo: recommendation: convert these two classes to a single service class (not a controller class)
+    // todo: and call service class methods from controller
+
     private final AccountService accountService;
     private final ServiceRequestRepository serviceRequestRepository;
     private final ServiceRequestSpecialistRepository serviceRequestSpecialistRepository;
@@ -45,7 +49,7 @@ public class ServiceRequestCustomerController {
 
 
     @PostMapping("/{id}/customer/reject")
-    @RolesAllowed("ROLE_SPECIALIST")
+    @RolesAllowed("ROLE_CUSTOMER")
     @Transactional
     public void specialistAccept(
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
@@ -54,18 +58,19 @@ public class ServiceRequestCustomerController {
         // todo: remove duplication
         var customer = (Customer) accountService.findConcreteUserClassFromUserDetails(userDetails);
         var serviceRequest = getServiceRequest(id);
-        var relation = serviceRequestSpecialistRepository.findByServiceRequestAndStatusEquals(
-                serviceRequest,
-                ServiceRequestSpecialistStatus.WAITING_FOR_CUSTOMER
-        ).orElseThrow(
-                IllegalStateException::new
-        );
-
-        if (!customer.getId().equals(serviceRequest.getCustomer().getId())) {
+        if (!customer.equals(serviceRequest.getCustomer())) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN, "request user not matching service's customer"
             );
         }
+        var relation = serviceRequestSpecialistRepository.findByServiceRequestAndStatusEquals(
+                serviceRequest,
+                ServiceRequestSpecialistStatus.WAITING_FOR_CUSTOMER
+        ).orElseThrow(() ->
+            new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "service is not waiting for customer's acceptance"
+            )
+        );
         if (!ServiceRequestStatus.WAITING_FOR_CUSTOMER_ACCEPTANCE.equals(serviceRequest.getStatus())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "bad"
@@ -90,18 +95,20 @@ public class ServiceRequestCustomerController {
             @PathVariable(name = "id") Long id) {
         var customer = (Customer) accountService.findConcreteUserClassFromUserDetails(userDetails);
         var serviceRequest = getServiceRequest(id);
-        var relation = serviceRequestSpecialistRepository.findByServiceRequestAndStatusEquals(
-                serviceRequest,
-                ServiceRequestSpecialistStatus.WAITING_FOR_CUSTOMER
-        ).orElseThrow(
-                IllegalStateException::new
-        );
-
-        if (!customer.getId().equals(serviceRequest.getCustomer().getId())) {
+        if (!customer.equals(serviceRequest.getCustomer())) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN, "request user not matching service's customer"
             );
         }
+        var relation = serviceRequestSpecialistRepository.findByServiceRequestAndStatusEquals(
+                serviceRequest,
+                ServiceRequestSpecialistStatus.WAITING_FOR_CUSTOMER
+        ).orElseThrow(() ->
+                new ResponseStatusException(
+                        HttpStatus.FORBIDDEN, "service is not waiting for customer's acceptance"
+                )
+        );
+
         if (!ServiceRequestStatus.WAITING_FOR_CUSTOMER_ACCEPTANCE.equals(serviceRequest.getStatus())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "bad"
@@ -117,10 +124,6 @@ public class ServiceRequestCustomerController {
         // send notification to specialist
     }
 
-    private Specialist getSpecialist(UserDetails userDetails) {
-        return (Specialist) accountService.findConcreteUserClassFromUserDetails(userDetails);
-    }
-
     private ServiceRequest getServiceRequest(Long id) {
         return serviceRequestRepository.findById(id)
                 .orElseThrow(ServiceRequestNotFoundException::new);
@@ -128,7 +131,7 @@ public class ServiceRequestCustomerController {
 
 
     private ServiceRequestSpecialist getRelation(Specialist specialist, ServiceRequest serviceRequest) {
-        return serviceRequestSpecialistRepository.findBySpecialistAndServiceRequest(
-                specialist, serviceRequest).orElseThrow(ServiceRequestNotRelatedToSpecialistException::new);
+        return serviceRequestSpecialistRepository.findFirstByServiceRequestAndSpecialistOrderByCreationDesc(
+                serviceRequest, specialist).orElseThrow(ServiceRequestNotRelatedToSpecialistException::new);
     }
 }

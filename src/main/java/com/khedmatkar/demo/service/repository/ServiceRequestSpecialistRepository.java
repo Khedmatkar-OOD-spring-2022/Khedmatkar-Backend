@@ -15,8 +15,8 @@ public interface ServiceRequestSpecialistRepository extends JpaRepository<Servic
 
     List<ServiceRequestSpecialist> findAllBySpecialist(Specialist specialist);
 
-    Optional<ServiceRequestSpecialist> findBySpecialistAndServiceRequest(Specialist specialist,
-                                                                         ServiceRequest serviceRequest);
+    Optional<ServiceRequestSpecialist> findFirstByServiceRequestAndSpecialistOrderByCreationDesc(
+            ServiceRequest serviceRequest, Specialist specialist);
 
     Optional<ServiceRequestSpecialist> findByServiceRequestAndStatusEquals(ServiceRequest serviceRequest, ServiceRequestSpecialistStatus status);
 }
