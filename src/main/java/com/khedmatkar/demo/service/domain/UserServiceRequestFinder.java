@@ -1,4 +1,4 @@
-package com.khedmatkar.demo.service.notdomain;
+package com.khedmatkar.demo.service.domain;
 
 public interface UserServiceRequestFinder {
 }

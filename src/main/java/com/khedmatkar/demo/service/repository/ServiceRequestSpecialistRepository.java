@@ -4,7 +4,6 @@ import com.khedmatkar.demo.account.entity.Specialist;
 import com.khedmatkar.demo.service.entity.ServiceRequest;
 import com.khedmatkar.demo.service.entity.ServiceRequestSpecialist;
 import com.khedmatkar.demo.service.entity.ServiceRequestSpecialistStatus;
-import com.khedmatkar.demo.service.entity.ServiceRequestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

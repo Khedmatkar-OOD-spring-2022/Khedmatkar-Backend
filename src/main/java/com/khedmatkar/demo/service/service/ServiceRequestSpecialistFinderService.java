@@ -6,7 +6,7 @@ import com.khedmatkar.demo.service.entity.ServiceRequest;
 import com.khedmatkar.demo.service.entity.ServiceRequestSpecialist;
 import com.khedmatkar.demo.service.entity.ServiceRequestSpecialistStatus;
 import com.khedmatkar.demo.service.entity.ServiceRequestStatus;
-import com.khedmatkar.demo.service.notdomain.CandidateSpecialistFinderStrategy;
+import com.khedmatkar.demo.service.domain.CandidateSpecialistFinderStrategy;
 import com.khedmatkar.demo.service.repository.ServiceRequestRepository;
 import com.khedmatkar.demo.service.repository.ServiceRequestSpecialistRepository;
 import com.khedmatkar.demo.service.repository.SpecialtyRepository;
@@ -64,7 +64,7 @@ public class ServiceRequestSpecialistFinderService {
     public void findSpecialistForServiceRequest(ServiceRequest serviceRequest) {
         var specialist = candidateSpecialistFinderStrategy.findSpecialist(serviceRequest);
         var item = ServiceRequestSpecialist.builder()
-                .status(ServiceRequestSpecialistStatus.WAITING_FOR_SPECIALIST)
+                .status(ServiceRequestSpecialistStatus.WAITING_FOR_SPECIALIST_ACCEPTANCE)
                 .specialist(specialist)
                 .serviceRequest(serviceRequest)
                 .build();

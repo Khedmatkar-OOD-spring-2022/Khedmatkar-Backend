@@ -1,6 +1,6 @@
 package com.khedmatkar.demo.account.controller;
 
-import com.khedmatkar.demo.account.AccountService;
+import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.dto.CertificateDTO;
 import com.khedmatkar.demo.account.entity.Certificate;
 import com.khedmatkar.demo.account.entity.Specialist;

@@ -1,6 +1,6 @@
 package com.khedmatkar.demo.service.controller;
 
-import com.khedmatkar.demo.account.AccountService;
+import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.entity.Customer;
 import com.khedmatkar.demo.service.dto.ServiceRequestCreationDTO;
 import com.khedmatkar.demo.service.service.ServiceRequestSpecialistFinderService;

@@ -1,6 +1,6 @@
 package com.khedmatkar.demo.account.controller;
 
-import com.khedmatkar.demo.account.AccountService;
+import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.dto.UserProfileDTO;
 import com.khedmatkar.demo.account.repository.UserRepository;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,11 +22,6 @@ public class UserProfileController {
                                  AccountService accountService) {
         this.userRepository = userRepository;
         this.accountService = accountService;
-    }
-
-    @GetMapping("/throw")
-    public void throwSimple() {
-        accountService.thrrow();
     }
 
     @GetMapping("")

@@ -1,11 +1,11 @@
 package com.khedmatkar.demo.service.controller;
 
-import com.khedmatkar.demo.account.AccountService;
+import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.entity.User;
 import com.khedmatkar.demo.service.dto.ServiceRequestListViewDTO;
-import com.khedmatkar.demo.service.notdomain.CustomerServiceRequestHistoryFinder;
-import com.khedmatkar.demo.service.notdomain.ServiceRequestFinder;
-import com.khedmatkar.demo.service.notdomain.SpecialistServiceRequestHistoryFinder;
+import com.khedmatkar.demo.service.domain.CustomerServiceRequestHistoryFinder;
+import com.khedmatkar.demo.service.domain.ServiceRequestFinder;
+import com.khedmatkar.demo.service.domain.SpecialistServiceRequestHistoryFinder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;

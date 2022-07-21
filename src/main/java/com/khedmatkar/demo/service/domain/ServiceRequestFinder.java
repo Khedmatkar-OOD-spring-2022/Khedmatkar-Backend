@@ -1,4 +1,4 @@
-package com.khedmatkar.demo.service.notdomain;
+package com.khedmatkar.demo.service.domain;
 
 import com.khedmatkar.demo.account.entity.User;
 import com.khedmatkar.demo.service.entity.ServiceRequest;

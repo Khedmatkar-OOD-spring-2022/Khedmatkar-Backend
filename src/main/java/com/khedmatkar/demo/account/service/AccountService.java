@@ -1,14 +1,12 @@
-package com.khedmatkar.demo.account;
+package com.khedmatkar.demo.account.service;
 
 import com.khedmatkar.demo.account.entity.User;
 import com.khedmatkar.demo.account.repository.CustomerRepository;
 import com.khedmatkar.demo.account.repository.SpecialistRepository;
 import com.khedmatkar.demo.account.repository.UserRepository;
-import com.khedmatkar.demo.exception.NotFoundException;
-import org.springframework.http.HttpStatus;
+import com.khedmatkar.demo.exception.UserNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 
 @Component
@@ -25,17 +23,10 @@ public class AccountService {
         this.customerRepository = customerRepository;
     }
 
-    public void thrrow() {
-        throw new NotFoundException("asdfasdfsadf");
-    }
-
     public User findUserFromUserDetails(UserDetails userDetails) {
         String email = userDetails.getUsername();
-        // todo: remove this exception and define appropriate exceptions
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "entity not found"
-                ));
+                .orElseThrow(UserNotFoundException::new);
     }
 
     public User findConcreteUserClassFromUserDetails(UserDetails userDetails) {
@@ -47,7 +38,6 @@ public class AccountService {
         if (customer.isPresent())
             return customer.get();
 
-        throw new RuntimeException();
-        // todo: throw user not found exception
+        throw new UserNotFoundException();
     }
 }
