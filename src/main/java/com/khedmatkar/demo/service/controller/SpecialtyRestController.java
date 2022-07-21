@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,9 +34,15 @@ public class SpecialtyRestController {
     }
 
     @GetMapping("")
-    public List<SpecialtyDTO> getAll() {
-        return specialtyRepository.findAll()
-                .stream()
+    public List<SpecialtyDTO> getAll(
+            @RequestParam(value = "onlyRoots", defaultValue = "false") boolean onlyRoots) {
+        List <Specialty> specialties;
+        if (onlyRoots) {
+            specialties = specialtyRepository.findByParentId(null);
+        } else {
+            specialties = specialtyRepository.findAll();
+        }
+        return specialties.stream()
                 .map(SpecialtyDTO::from)
                 .collect(Collectors.toList());
     }
@@ -49,7 +56,7 @@ public class SpecialtyRestController {
     }
 
     @PostMapping
-    public void post(@RequestBody SpecialtyDTO dto) {
+    public void post(@RequestBody @Valid SpecialtyDTO dto) {
         var specialty = Specialty.builder()
                 .name(dto.name)
                 .build();
