@@ -2,12 +2,14 @@ package com.khedmatkar.demo.service.dto;
 
 import com.khedmatkar.demo.AbstractEntity;
 import com.khedmatkar.demo.service.entity.Specialty;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Optional;
 
 @SuperBuilder
+@NoArgsConstructor
 public class SpecialtyDTO {
 
     @NotBlank
