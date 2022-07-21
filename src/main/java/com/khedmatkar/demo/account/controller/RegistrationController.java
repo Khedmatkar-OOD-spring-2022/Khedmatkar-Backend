@@ -1,7 +1,7 @@
 package com.khedmatkar.demo.account.controller;
 
 
-import com.khedmatkar.demo.account.dto.UserProfileDTO;
+import com.khedmatkar.demo.account.dto.UserDTO;
 import com.khedmatkar.demo.account.entity.Customer;
 import com.khedmatkar.demo.account.entity.Specialist;
 import com.khedmatkar.demo.account.entity.User;
@@ -34,7 +34,7 @@ public class RegistrationController {
 
 
     @PostMapping("/register")
-    public void registerUser(@RequestBody @Valid UserProfileDTO dto) {
+    public void registerUser(@RequestBody @Valid UserDTO dto) {
         if (userRepository.existsByEmail(dto.email)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "another user with this email exists"
@@ -50,7 +50,7 @@ public class RegistrationController {
         }
     }
 
-    public User fillUserInfo(UserProfileDTO dto) {
+    public User fillUserInfo(UserDTO dto) {
         User user = null;
         UserType userType = null;
         String typeString = dto.type.toUpperCase();

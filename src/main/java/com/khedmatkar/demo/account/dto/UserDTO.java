@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 
 @AllArgsConstructor
 @SuperBuilder
-public class UserProfileDTO {
+public class UserDTO {
 
     @NotBlank
     public final String firstName;
@@ -27,3 +27,4 @@ public class UserProfileDTO {
     @NotEmpty
     public final String type;
 }
+

@@ -2,6 +2,8 @@ package com.khedmatkar.demo.account.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.khedmatkar.demo.AbstractEntity;
+import com.khedmatkar.demo.account.dto.UserDTO;
+import com.khedmatkar.demo.account.dto.UserProfileDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,4 +34,10 @@ public class User extends AbstractEntity {
     @Column(nullable = false)
     @JsonIgnore
     private String password;
+
+    public void updateProfile(UserProfileDTO newUser) {
+        this.email = newUser.email;
+        this.firstName = newUser.firstName;
+        this.lastName = newUser.lastName;
+    }
 }
