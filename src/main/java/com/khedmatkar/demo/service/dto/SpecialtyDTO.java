@@ -11,14 +11,15 @@ import java.util.Optional;
 @SuperBuilder
 @NoArgsConstructor
 public class SpecialtyDTO {
+    public Long id;
 
     @NotBlank
     public String name;
-    
     public Long parentId;
 
     public static SpecialtyDTO from(Specialty specialty) {
         return SpecialtyDTO.builder()
+                .id(specialty.getId())
                 .name(specialty.getName())
                 .parentId(
                         Optional.ofNullable(specialty.getParent())
