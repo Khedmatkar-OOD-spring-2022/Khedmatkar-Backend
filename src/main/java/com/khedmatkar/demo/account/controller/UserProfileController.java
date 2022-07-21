@@ -40,7 +40,7 @@ public class UserProfileController {
     @RolesAllowed("ROLE_USER")
     public void changePassword(
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
-            UserDTO dto) {
+            @RequestBody UserDTO dto) {
 
         var user = accountService.findUserFromUserDetails(userDetails);
         var newPassword = PasswordEncoderFactories
