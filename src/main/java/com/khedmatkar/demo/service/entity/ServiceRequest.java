@@ -2,7 +2,6 @@ package com.khedmatkar.demo.service.entity;
 
 import com.khedmatkar.demo.AbstractEntity;
 import com.khedmatkar.demo.account.entity.Customer;
-import com.khedmatkar.demo.account.entity.Specialist;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +14,8 @@ import java.util.List;
 @Entity
 @Table(name = "service_requests")
 @NoArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 @SuperBuilder(toBuilder = true)
 public class ServiceRequest extends AbstractEntity {
 

@@ -43,7 +43,7 @@ public class AdminController {
                 .password(password)
                 .type(UserType.ADMIN.name())
                 .build();
-        registrationController.registerUser(userDTO);
+        registrationController.registerUser(userDTO); //todo call user generation service method
         Admin admin = null;
         var admin_tuple = adminRepository.findByEmail(dto.email);
         if (admin_tuple.isPresent())

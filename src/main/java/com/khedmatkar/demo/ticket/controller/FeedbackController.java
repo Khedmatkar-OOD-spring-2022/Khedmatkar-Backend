@@ -44,7 +44,6 @@ public class FeedbackController {
     }
 
     @GetMapping("/")
-    @Secured(UserType.Role.ADMIN)
     @RolesAllowed(AdminPermission.Role.FEEDBACK_RW)
     public List<FeedbackDTO> getAllFeedbacks() {
         List<Feedback> feedbacks = feedbackRepository.findAll();

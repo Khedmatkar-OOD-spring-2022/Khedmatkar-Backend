@@ -7,4 +7,5 @@ public enum ServiceRequestStatus {
     IN_PROGRESS,
     EVALUATION,
     DONE,
+    CANCELED,
 }
