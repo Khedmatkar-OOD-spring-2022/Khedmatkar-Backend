@@ -2,10 +2,8 @@ package com.khedmatkar.demo.account.controller;
 
 
 import com.khedmatkar.demo.account.dto.UserDTO;
-import com.khedmatkar.demo.account.entity.Customer;
-import com.khedmatkar.demo.account.entity.Specialist;
-import com.khedmatkar.demo.account.entity.User;
-import com.khedmatkar.demo.account.entity.UserType;
+import com.khedmatkar.demo.account.entity.*;
+import com.khedmatkar.demo.account.repository.AdminRepository;
 import com.khedmatkar.demo.account.repository.CustomerRepository;
 import com.khedmatkar.demo.account.repository.SpecialistRepository;
 import com.khedmatkar.demo.account.repository.UserRepository;
@@ -22,14 +20,18 @@ import javax.validation.Valid;
 public class RegistrationController {
     private final CustomerRepository customerRepository;
     private final SpecialistRepository specialistRepository;
+    private final AdminRepository adminRepository;
     private final UserRepository userRepository;
 
     public RegistrationController(
             CustomerRepository customerRepository,
-            SpecialistRepository specialistRepository, UserRepository userRepository) {
+            SpecialistRepository specialistRepository,
+            UserRepository userRepository,
+            AdminRepository adminRepository) {
         this.customerRepository = customerRepository;
         this.specialistRepository = specialistRepository;
         this.userRepository = userRepository;
+        this.adminRepository = adminRepository;
     }
 
 
@@ -47,6 +49,8 @@ public class RegistrationController {
             customerRepository.save((Customer) user);
         } else if (UserType.SPECIALIST.equals(userType)) {
             specialistRepository.save((Specialist) user);
+        } else if (UserType.ADMIN.equals(userType)) {
+            adminRepository.save((Admin) user);
         }
     }
 
@@ -60,6 +64,9 @@ public class RegistrationController {
         } else if (UserType.SPECIALIST.toString().equals(typeString)) {
             userType = UserType.SPECIALIST;
             user = new Specialist();
+        } else if (UserType.ADMIN.toString().equals(typeString)) {
+            userType = UserType.ADMIN;
+            user = new Admin();
         } else {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "bad user type"
