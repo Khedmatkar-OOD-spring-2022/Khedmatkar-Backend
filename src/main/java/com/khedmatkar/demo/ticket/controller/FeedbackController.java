@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RolesAllowed(UserType.Role.USER)
-@RequestMapping("/feedback")
+@RequestMapping("/api/feedback")
 public class FeedbackController {
     private final FeedbackRepository feedbackRepository;
     private final AccountService accountService;

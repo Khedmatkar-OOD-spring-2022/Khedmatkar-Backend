@@ -17,7 +17,7 @@ import javax.validation.Valid;
 
 @RestController
 @RolesAllowed(UserType.Role.ADMIN)
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
     private final AdminRepository adminRepository;
     private final AccountService accountService;
