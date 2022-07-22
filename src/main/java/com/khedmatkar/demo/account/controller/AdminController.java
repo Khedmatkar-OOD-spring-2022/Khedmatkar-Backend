@@ -1,12 +1,14 @@
 package com.khedmatkar.demo.account.controller;
 
 import com.khedmatkar.demo.account.dto.AdminDTO;
+import com.khedmatkar.demo.account.dto.AdminPermissionDTO;
 import com.khedmatkar.demo.account.entity.*;
 import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.dto.UserDTO;
 import com.khedmatkar.demo.account.repository.AdminRepository;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
@@ -31,10 +33,7 @@ public class AdminController {
     @PostMapping("/register")
     @RolesAllowed(AdminPermission.Role.USER_PROFILE_RW)
     @Transactional
-    public AdminDTO registerAdmin(
-            @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
-            @RequestBody @Valid AdminDTO dto) {
-        System.out.println(userDetails.getAuthorities());
+    public AdminDTO registerAdmin(@RequestBody @Valid AdminDTO dto) {
         var password = "123"; // todo generate random strong password
         UserDTO userDTO = UserDTO.builder()
                 .email(dto.email)
@@ -58,5 +57,20 @@ public class AdminController {
                 .password(password)
                 .permissions(admin.getPermissionsFromString())
                 .build();
+    }
+
+    @PostMapping("/permission")
+    @RolesAllowed(AdminPermission.Role.USER_PROFILE_RW)
+    @Transactional
+    public void updatePermissions(@RequestBody @Valid AdminPermissionDTO dto) {
+        Admin admin;
+        var admin_tuple = adminRepository.findByEmail(dto.email);
+        if (admin_tuple.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "admin does not exists"
+            );
+        admin = admin_tuple.get();
+        admin.setPermissionsFromString(dto.permissions);
+        adminRepository.save(admin);
     }
 }

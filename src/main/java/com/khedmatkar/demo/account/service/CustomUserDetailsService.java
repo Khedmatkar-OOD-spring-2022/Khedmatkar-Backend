@@ -32,8 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Set<String> roles = new java.util.HashSet<>(Set.of(user.getType().toString(), "USER"));
         if (user.getType() == UserType.ADMIN) {
-            var admin = adminRepository.findByEmail(username).get();
-            roles.addAll(admin.getPermissionsFromString());
+            roles.addAll(((Admin) user).getPermissionsFromString());
         }
 
         return User
