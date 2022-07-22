@@ -57,7 +57,7 @@ public class ServiceRequestCustomerAcceptanceService {
         // todo: send notification to specialist
     }
 
-    private void rejectRelation(ServiceRequestSpecialist relation) {
+    private void rejectRelation(ServiceRequestSpecialist relation) { //todo close chat
         var serviceRequest = relation.getServiceRequest();
         relation.setStatus(ServiceRequestSpecialistStatus.REJECTED_BY_CUSTOMER);
         serviceRequestSpecialistRepository.save(relation);

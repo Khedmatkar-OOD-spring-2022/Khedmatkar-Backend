@@ -19,6 +19,8 @@ import java.util.List;
 @Table(name = "chats")
 public class Chat extends AbstractEntity {
 
+    @Enumerated(EnumType.STRING)
+    private ChatStatus status = ChatStatus.OPENED;
     @OneToOne
     private ServiceRequestSpecialist serviceRequestSpecialist;
 
