@@ -7,6 +7,7 @@ import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.dto.UserDTO;
 import com.khedmatkar.demo.account.repository.AdminRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -57,6 +58,24 @@ public class AdminController {
                 .password(password)
                 .permissions(admin.getPermissionsFromString())
                 .build();
+
+        //todo send notification to admin
+    }
+
+    @GetMapping("/permission")
+    @Transactional
+    public AdminPermissionDTO getPermissions(@AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails) {
+        Admin admin;
+        var admin_tuple = adminRepository.findByEmail(userDetails.getUsername());
+        if (admin_tuple.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "admin does not exists"
+            );
+        admin = admin_tuple.get();
+        return AdminPermissionDTO.builder()
+                .email(admin.getEmail())
+                .permissions(admin.getPermissionsFromString())
+                .build();
     }
 
     @PostMapping("/permission")
@@ -72,5 +91,7 @@ public class AdminController {
         admin = admin_tuple.get();
         admin.setPermissionsFromString(dto.permissions);
         adminRepository.save(admin);
+
+        //todo send notification to admin
     }
 }
