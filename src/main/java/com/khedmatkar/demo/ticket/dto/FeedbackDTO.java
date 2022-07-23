@@ -15,6 +15,9 @@ public class FeedbackDTO {
     public final String writerEmail;
 
     @NotBlank
+    public final String title;
+
+    @NotBlank
     public final String content;
 
     public final LocalDateTime timeStamp;

@@ -6,6 +6,8 @@ import com.khedmatkar.demo.account.entity.*;
 import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.dto.UserDTO;
 import com.khedmatkar.demo.account.repository.AdminRepository;
+import com.khedmatkar.demo.messaging.dto.ChatDTO;
+import com.khedmatkar.demo.messaging.dto.MessageDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +16,12 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RolesAllowed(UserType.Role.ADMIN)
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admins")
 public class AdminController {
     private final AdminRepository adminRepository;
     private final AccountService accountService;
@@ -29,6 +33,18 @@ public class AdminController {
         this.adminRepository = adminRepository;
         this.accountService = accountService;
         this.registrationController = registrationController;
+    }
+
+    @GetMapping("/")
+    @RolesAllowed(AdminPermission.Role.USER_LIST_RW)
+    @Transactional
+    public List<AdminDTO> getAllAdmins() {
+        return adminRepository.findAll().stream().map(admin -> AdminDTO.builder()
+                .email(admin.getEmail())
+                .firstName(admin.getFirstName())
+                .lastName(admin.getLastName())
+                .permissions(admin.getPermissionsFromString())
+                .build()).collect(Collectors.toList());
     }
 
     @PostMapping("/register")

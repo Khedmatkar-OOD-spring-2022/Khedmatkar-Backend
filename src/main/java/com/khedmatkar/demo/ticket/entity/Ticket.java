@@ -17,6 +17,8 @@ import javax.persistence.*;
 @Table(name = "tickets")
 public class Ticket extends AbstractEntity {
 
+    private String title;
+
     private String content;
 
     @ManyToOne

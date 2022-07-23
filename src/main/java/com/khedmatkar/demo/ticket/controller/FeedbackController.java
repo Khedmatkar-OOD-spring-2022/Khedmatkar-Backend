@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RolesAllowed(UserType.Role.USER)
-@RequestMapping("/api/feedback")
+@RequestMapping("/api/feedbacks")
 public class FeedbackController {
     private final FeedbackRepository feedbackRepository;
     private final AccountService accountService;
@@ -39,6 +39,7 @@ public class FeedbackController {
         feedbackRepository.save(
                 Feedback.builder()
                         .writer(user)
+                        .title(dto.title)
                         .content(dto.content)
                         .build());
     }
@@ -50,6 +51,7 @@ public class FeedbackController {
         return feedbacks.stream()
                 .map(feedback -> FeedbackDTO.builder()
                         .writerEmail(feedback.getWriter().getEmail())
+                        .title(feedback.getTitle())
                         .content(feedback.getContent())
                         .timeStamp(feedback.getCreation())
                         .build())
