@@ -1,5 +1,6 @@
 package com.khedmatkar.demo.service.controller;
 
+import com.khedmatkar.demo.service.dto.ServiceRequestListViewDTO;
 import com.khedmatkar.demo.service.entity.ServiceRequestDetailViewDTO;
 import com.khedmatkar.demo.service.repository.ServiceRequestRepository;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
-@RequestMapping("api/serviceRequest")
+@RequestMapping("api/serviceRequests")
 public class ServiceRequestController {
     private final ServiceRequestRepository serviceRequestRepository;
 
@@ -20,13 +21,13 @@ public class ServiceRequestController {
     }
 
     @GetMapping("/{id}")
-    public ServiceRequestDetailViewDTO get(@PathVariable(name = "id") Long id) {
+    public ServiceRequestListViewDTO get(@PathVariable(name = "id") Long id) {
         var serviceRequest = serviceRequestRepository.findById(id)
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.NOT_FOUND,
                                 "service request not found"
                         ));
-        return ServiceRequestDetailViewDTO.from(serviceRequest);
+        return ServiceRequestListViewDTO.from(serviceRequest);
     }
 }

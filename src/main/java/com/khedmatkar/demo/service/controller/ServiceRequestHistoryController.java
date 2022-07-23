@@ -2,6 +2,7 @@ package com.khedmatkar.demo.service.controller;
 
 import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.entity.User;
+import com.khedmatkar.demo.service.domain.AdminServiceRequestHistoryFinder;
 import com.khedmatkar.demo.service.dto.ServiceRequestListViewDTO;
 import com.khedmatkar.demo.service.domain.CustomerServiceRequestHistoryFinder;
 import com.khedmatkar.demo.service.domain.ServiceRequestFinder;
@@ -47,7 +48,7 @@ public class ServiceRequestHistoryController {
             case SPECIALIST:
                 return context.getBean(SpecialistServiceRequestHistoryFinder.class);
             case ADMIN:
-                break;
+                return context.getBean(AdminServiceRequestHistoryFinder.class);
             default:
         }
         throw new IllegalStateException("Unexpected value: " + user.getType());

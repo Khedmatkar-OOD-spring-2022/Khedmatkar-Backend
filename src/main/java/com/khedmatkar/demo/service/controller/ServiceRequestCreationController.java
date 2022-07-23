@@ -15,7 +15,7 @@ import javax.validation.Valid;
 
 
 @RestController
-@RequestMapping("api/serviceRequest")
+@RequestMapping("api/serviceRequests")
 public class ServiceRequestCreationController {
     private final ServiceRequestSpecialistFinderService serviceRequestSpecialistFinderService;
     private final AccountService accountService;

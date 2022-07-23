@@ -62,6 +62,7 @@ public class ServiceRequestCustomerAcceptanceService {
         relation.setStatus(ServiceRequestSpecialistStatus.REJECTED_BY_CUSTOMER);
         serviceRequestSpecialistRepository.save(relation);
         serviceRequest.setStatus(ServiceRequestStatus.FINDING_SPECIALIST);
+        serviceRequest.setAcceptedSpecialist(null);
         serviceRequestRepository.save(serviceRequest);
         serviceRequestSpecialistFinderService.findSpecialistForServiceRequest(serviceRequest);
     }
@@ -71,6 +72,7 @@ public class ServiceRequestCustomerAcceptanceService {
         relation.setStatus(ServiceRequestSpecialistStatus.ACCEPTED);
         serviceRequestSpecialistRepository.save(relation);
         serviceRequest.setStatus(ServiceRequestStatus.IN_PROGRESS);
+        serviceRequest.setAcceptedSpecialist(relation.getSpecialist());
         serviceRequestRepository.save(serviceRequest);
     }
 }

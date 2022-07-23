@@ -1,5 +1,6 @@
 package com.khedmatkar.demo.account.dto;
 
+import com.khedmatkar.demo.account.entity.Specialist;
 import lombok.AllArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -20,4 +21,12 @@ public class UserProfileDTO {
     @NotEmpty
     @Email
     public final String email;
+
+    public static UserProfileDTO from(Specialist specialist) {
+        return UserProfileDTO.builder()
+                .email(specialist.getEmail())
+                .firstName(specialist.getFirstName())
+                .lastName(specialist.getLastName())
+                .build();
+    }
 }

@@ -2,6 +2,7 @@ package com.khedmatkar.demo.service.entity;
 
 import com.khedmatkar.demo.AbstractEntity;
 import com.khedmatkar.demo.account.entity.Customer;
+import com.khedmatkar.demo.account.entity.Specialist;
 import com.khedmatkar.demo.messaging.entity.Chat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,9 @@ public class ServiceRequest extends AbstractEntity {
 
     @OneToOne
     private Customer customer;
+
+    @OneToOne
+    private Specialist acceptedSpecialist;
 
     @OneToMany(mappedBy = "serviceRequest", cascade = CascadeType.REMOVE)
     private List<ServiceRequestSpecialist> specialistHistory;
