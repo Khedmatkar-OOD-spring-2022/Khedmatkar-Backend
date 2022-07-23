@@ -15,7 +15,6 @@ import javax.persistence.*;
 @SuperBuilder
 @NoArgsConstructor
 @Getter
-@Setter
 public class Certificate extends AbstractEntity {
 
     @ManyToOne
@@ -26,6 +25,6 @@ public class Certificate extends AbstractEntity {
 
     @Setter
     @Column(nullable = false)
-    @Builder.Default
-    private Boolean validated = false;
+    @Enumerated(EnumType.STRING)
+    private ValidationStatus status;
 }
