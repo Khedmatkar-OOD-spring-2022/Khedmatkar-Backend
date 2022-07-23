@@ -1,6 +1,5 @@
 package com.khedmatkar.demo.service.dto;
 
-import com.khedmatkar.demo.AbstractEntity;
 import com.khedmatkar.demo.account.dto.UserProfileDTO;
 import com.khedmatkar.demo.service.entity.ServiceRequest;
 import com.khedmatkar.demo.service.entity.ServiceRequestStatus;
@@ -20,7 +19,8 @@ public class ServiceRequestListViewDTO {
     public String address;
     public Date receptionDate;
     public SpecialtyDTO specialty;
-    public UserProfileDTO specialist;
+    public UserProfileDTO acceptedSpecialist;
+    public UserProfileDTO candidateSpecialist;
 
     public static ServiceRequestListViewDTO from(ServiceRequest serviceRequest) {
         return ServiceRequestListViewDTO.builder()
@@ -30,10 +30,15 @@ public class ServiceRequestListViewDTO {
                 .creation(serviceRequest.getCreation())
                 .receptionDate(serviceRequest.getReceptionDate())
                 .specialty(SpecialtyDTO.from(serviceRequest.getSpecialty()))
-                .specialist(
+                .acceptedSpecialist(
                         Optional.ofNullable(serviceRequest.getAcceptedSpecialist())
                                 .map(UserProfileDTO::from)
                                 .orElse(null))
+                .candidateSpecialist(Optional.ofNullable(serviceRequest.getSpecialistHistory() //todo better implementation for setting last candidate
+                                .get(serviceRequest.getSpecialistHistory().size() - 1).getSpecialist())
+                        .map(UserProfileDTO::from)
+                        .orElse(null))
+
                 .build();
     }
 }

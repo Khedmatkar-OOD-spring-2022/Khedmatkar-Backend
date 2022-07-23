@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
+
 
 @RestController
 @RequestMapping("api/serviceRequests")
@@ -21,6 +23,7 @@ public class ServiceRequestController {
     }
 
     @GetMapping("/{id}")
+    @Transactional
     public ServiceRequestListViewDTO get(@PathVariable(name = "id") Long id) {
         var serviceRequest = serviceRequestRepository.findById(id)
                 .orElseThrow(() ->

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,7 @@ public class ServiceRequestHistoryController {
 
     @GetMapping("/")
     @RolesAllowed("ROLE_USER")
+    @Transactional
     public List<ServiceRequestListViewDTO> getHistory(
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails) {
         var user = accountService.findUserFromUserDetails(userDetails);
