@@ -2,6 +2,10 @@ package com.khedmatkar.demo.account.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Set;
+
 public enum AdminPermission implements GrantedAuthority {
 
     USER_LIST_RW("USER_LIST_RW"),
@@ -33,6 +37,10 @@ public enum AdminPermission implements GrantedAuthority {
         public static final String QUESTIONNAIRE_RW = "ROLE_QUESTIONNAIRE_RW";
         public static final String TECHNICAL_ISSUE_RW = "ROLE_TECHNICAL_ISSUE_RW";
         public static final String FEEDBACK_RW = "ROLE_FEEDBACK_RW";
+    }
+
+    public boolean in (Set<AdminPermission> permissions) {
+        return permissions.contains(this);
     }
 }
 

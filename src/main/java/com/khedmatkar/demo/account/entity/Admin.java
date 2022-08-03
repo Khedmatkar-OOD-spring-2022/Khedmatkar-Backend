@@ -36,4 +36,8 @@ public class Admin extends User {
                 .map(AdminPermission::valueOf)
                 .collect(Collectors.toSet()));
     }
+
+    public boolean has_permission(AdminPermission permission) {
+        return permission.in(this.getPermissions());
+    }
 }

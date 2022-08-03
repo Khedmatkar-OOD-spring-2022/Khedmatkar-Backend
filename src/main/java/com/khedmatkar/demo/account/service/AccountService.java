@@ -9,6 +9,8 @@ import com.khedmatkar.demo.exception.UserNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+
 
 @Component
 public class AccountService {
@@ -33,6 +35,7 @@ public class AccountService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
+    @Transactional
     public User findConcreteUserClassFromUserDetails(UserDetails userDetails) {
         String email = userDetails.getUsername();
         var specialist = specialistRepository.findByEmail(email);
