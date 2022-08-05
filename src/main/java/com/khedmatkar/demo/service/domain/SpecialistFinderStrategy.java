@@ -5,7 +5,7 @@ import com.khedmatkar.demo.service.entity.ServiceRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface CandidateSpecialistFinderStrategy {
+public interface SpecialistFinderStrategy {
 
     Specialist findSpecialist(ServiceRequest serviceRequest);
 }

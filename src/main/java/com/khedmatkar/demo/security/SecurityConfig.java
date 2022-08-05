@@ -1,4 +1,4 @@
-package com.khedmatkar.demo.configuration;
+package com.khedmatkar.demo.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

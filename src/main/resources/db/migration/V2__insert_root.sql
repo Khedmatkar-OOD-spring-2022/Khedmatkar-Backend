@@ -14,4 +14,5 @@ VALUES (0, 'USER_LIST_RW'),
        (0, 'SERVICE_W'),
        (0, 'QUESTIONNAIRE_RW'),
        (0, 'TECHNICAL_ISSUE_RW'),
-       (0, 'FEEDBACK_RW');
+       (0, 'FEEDBACK_RW'),
+       (0, 'ROOT');

@@ -1,12 +1,15 @@
 package com.khedmatkar.demo.service.service;
 
 import com.khedmatkar.demo.account.entity.Customer;
+import com.khedmatkar.demo.account.entity.Specialist;
+import com.khedmatkar.demo.account.repository.SpecialistRepository;
+import com.khedmatkar.demo.exception.SpecialistNotFoundException;
+import com.khedmatkar.demo.service.domain.SpecialistFinderFactory;
 import com.khedmatkar.demo.service.dto.ServiceRequestCreationDTO;
 import com.khedmatkar.demo.service.entity.ServiceRequest;
 import com.khedmatkar.demo.service.entity.ServiceRequestSpecialist;
 import com.khedmatkar.demo.service.entity.ServiceRequestSpecialistStatus;
 import com.khedmatkar.demo.service.entity.ServiceRequestStatus;
-import com.khedmatkar.demo.service.domain.CandidateSpecialistFinderStrategy;
 import com.khedmatkar.demo.service.repository.ServiceRequestRepository;
 import com.khedmatkar.demo.service.repository.ServiceRequestSpecialistRepository;
 import com.khedmatkar.demo.service.repository.SpecialtyRepository;
@@ -22,23 +25,24 @@ import javax.transaction.Transactional;
 public class ServiceRequestSpecialistFinderService {
     private final ServiceRequestRepository serviceRequestRepository;
     private final SpecialtyRepository specialtyRepository;
-    private final CandidateSpecialistFinderStrategy candidateSpecialistFinderStrategy;
+    private final SpecialistFinderFactory candidateFinderFactory;
     private final ServiceRequestSpecialistRepository serviceRequestSpecialistRepository;
+    private final SpecialistRepository specialistRepository;
 
     public ServiceRequestSpecialistFinderService(ServiceRequestRepository serviceRequestRepository,
                                                  SpecialtyRepository specialtyRepository,
-                                                 CandidateSpecialistFinderStrategy candidateSpecialistFinderStrategy,
-                                                 ServiceRequestSpecialistRepository serviceRequestSpecialistRepository) {
+                                                 SpecialistFinderFactory candidateFinderFactory,
+                                                 ServiceRequestSpecialistRepository serviceRequestSpecialistRepository,
+                                                 SpecialistRepository specialistRepository) {
         this.serviceRequestRepository = serviceRequestRepository;
         this.specialtyRepository = specialtyRepository;
-        this.candidateSpecialistFinderStrategy = candidateSpecialistFinderStrategy;
+        this.candidateFinderFactory = candidateFinderFactory;
         this.serviceRequestSpecialistRepository = serviceRequestSpecialistRepository;
+        this.specialistRepository = specialistRepository;
     }
 
     @Transactional
     public void create(ServiceRequestCreationDTO dto, Customer customer) {
-        // todo: convert to a unique exception handling style
-
         var specialty = specialtyRepository.findById(dto.specialtyId)
                 .orElseThrow(
                         () -> new ResponseStatusException(
@@ -54,15 +58,29 @@ public class ServiceRequestSpecialistFinderService {
                 .status(ServiceRequestStatus.FINDING_SPECIALIST)
                 .receptionDate(dto.receptionDate)
                 .build();
+
+        Specialist specialist;
         serviceRequestRepository.save(serviceRequest);
 
-        findSpecialistForServiceRequest(serviceRequest);
+        if (dto.specialistId != null) {
+            specialist = specialistRepository.findById(dto.specialistId)
+                    .orElseThrow(SpecialistNotFoundException::new);
+            setSpecialistForServiceRequest(serviceRequest, specialist);
+        } else {
+            findSpecialistForServiceRequest(serviceRequest);
+        }
     }
 
 
     @Transactional
     public void findSpecialistForServiceRequest(ServiceRequest serviceRequest) {
-        var specialist = candidateSpecialistFinderStrategy.findSpecialist(serviceRequest);
+        var specialistFinder = candidateFinderFactory.getSpecialistFinder();
+        var specialist = specialistFinder.findSpecialist(serviceRequest);
+
+        setSpecialistForServiceRequest(serviceRequest, specialist);
+    }
+
+    private void setSpecialistForServiceRequest(ServiceRequest serviceRequest, Specialist specialist) {
         var item = ServiceRequestSpecialist.builder()
                 .status(ServiceRequestSpecialistStatus.WAITING_FOR_SPECIALIST_ACCEPTANCE)
                 .specialist(specialist)

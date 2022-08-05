@@ -1,5 +1,6 @@
 package com.khedmatkar.demo.service.controller;
 
+import com.khedmatkar.demo.account.entity.UserType;
 import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.entity.Customer;
 import com.khedmatkar.demo.service.dto.ServiceRequestCreationDTO;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 
@@ -25,6 +27,7 @@ public class ServiceRequestCreationController {
         this.accountService = accountService;
     }
 
+    @RolesAllowed(UserType.Role.CUSTOMER)
     @PostMapping("/")
     public void post(@RequestBody @Valid ServiceRequestCreationDTO dto,
                      @AuthenticationPrincipal UserDetails userDetails) {

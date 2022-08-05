@@ -19,4 +19,8 @@ public class SpecialistService {
     public List<Specialist> searchSpecialists(SpecialistSearchDTO dto) {
         return specialistRepository.findByCertificateSetSpecialtyNameContains(dto.specialtyName);
     }
+
+    public List<Specialist> getAll() {
+        return specialistRepository.findAll();
+    }
 }

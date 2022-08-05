@@ -26,4 +26,12 @@ public class SpecialistRestController {
                 .map(SpecialistDTO::from)
                 .collect(Collectors.toList());
     }
+
+    @GetMapping
+    public List<SpecialistDTO> getAllSpecialists() {
+        return specialistService.getAll()
+                .stream()
+                .map(SpecialistDTO::from)
+                .collect(Collectors.toList());
+    }
 }

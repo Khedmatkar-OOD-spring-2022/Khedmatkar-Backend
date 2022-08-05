@@ -15,7 +15,8 @@ public enum AdminPermission implements GrantedAuthority {
     SERVICE_W("SERVICE_W"),
     QUESTIONNAIRE_RW("QUESTIONNAIRE_RW"),
     TECHNICAL_ISSUE_RW("TECHNICAL_ISSUE_RW"),
-    FEEDBACK_RW("FEEDBACK_RW");
+    FEEDBACK_RW("FEEDBACK_RW"),
+    ROOT("ROOT");
 
     private final String permission;
 
@@ -37,6 +38,7 @@ public enum AdminPermission implements GrantedAuthority {
         public static final String QUESTIONNAIRE_RW = "ROLE_QUESTIONNAIRE_RW";
         public static final String TECHNICAL_ISSUE_RW = "ROLE_TECHNICAL_ISSUE_RW";
         public static final String FEEDBACK_RW = "ROLE_FEEDBACK_RW";
+        public static final String ROOT = "ROLE_ROOT";
     }
 
     public boolean in (Set<AdminPermission> permissions) {
