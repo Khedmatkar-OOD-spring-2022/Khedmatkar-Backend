@@ -4,6 +4,10 @@ import com.khedmatkar.demo.account.entity.Customer;
 import com.khedmatkar.demo.exception.CustomerNotValidException;
 import com.khedmatkar.demo.exception.ServiceRequestIsNotPendingForCustomer;
 import com.khedmatkar.demo.exception.ServiceRequestNotFoundException;
+import com.khedmatkar.demo.messaging.entity.ChatStatus;
+import com.khedmatkar.demo.messaging.repository.ChatRepository;
+import com.khedmatkar.demo.notification.service.AnnouncementMessage;
+import com.khedmatkar.demo.notification.service.AnnouncementService;
 import com.khedmatkar.demo.service.domain.ServiceRequestAcceptanceCommand;
 import com.khedmatkar.demo.service.entity.ServiceRequest;
 import com.khedmatkar.demo.service.entity.ServiceRequestSpecialist;
@@ -21,14 +25,19 @@ public class ServiceRequestCustomerAcceptanceService {
     private final ServiceRequestRepository serviceRequestRepository;
     private final ServiceRequestSpecialistRepository serviceRequestSpecialistRepository;
     private final ServiceRequestSpecialistFinderService serviceRequestSpecialistFinderService;
+    private final AnnouncementService announcementService;
+    private final ChatRepository chatRepository;
 
     public ServiceRequestCustomerAcceptanceService(
             ServiceRequestRepository serviceRequestRepository,
             ServiceRequestSpecialistRepository serviceRequestSpecialistRepository,
-            ServiceRequestSpecialistFinderService serviceRequestSpecialistFinderService) {
+            ServiceRequestSpecialistFinderService serviceRequestSpecialistFinderService,
+            AnnouncementService announcementService, ChatRepository chatRepository) {
         this.serviceRequestRepository = serviceRequestRepository;
         this.serviceRequestSpecialistRepository = serviceRequestSpecialistRepository;
         this.serviceRequestSpecialistFinderService = serviceRequestSpecialistFinderService;
+        this.announcementService = announcementService;
+        this.chatRepository = chatRepository;
     }
 
     @RolesAllowed("ROLE_CUSTOMER")
@@ -53,11 +62,9 @@ public class ServiceRequestCustomerAcceptanceService {
         } else {
             rejectRelation(relation);
         }
-
-        // todo: send notification to specialist
     }
 
-    private void rejectRelation(ServiceRequestSpecialist relation) { //todo close chat
+    private void rejectRelation(ServiceRequestSpecialist relation) {
         var serviceRequest = relation.getServiceRequest();
         relation.setStatus(ServiceRequestSpecialistStatus.REJECTED_BY_CUSTOMER);
         serviceRequestSpecialistRepository.save(relation);
@@ -65,6 +72,16 @@ public class ServiceRequestCustomerAcceptanceService {
         serviceRequest.setAcceptedSpecialist(null);
         serviceRequestRepository.save(serviceRequest);
         serviceRequestSpecialistFinderService.findSpecialistForServiceRequest(serviceRequest);
+
+        relation.getChat().setStatus(ChatStatus.CLOSED);
+        chatRepository.save(relation.getChat());
+
+        announcementService.sendAnnouncementToUser(
+                relation.getSpecialist(),
+                AnnouncementMessage.CUSTOMER_REJECTS_SPECIALIST_ANNOUNCEMENT
+                        .getMessage()
+                        .formatted(relation.getServiceRequest().getId())
+        );
     }
 
     private void acceptRelation(ServiceRequestSpecialist relation) {
@@ -74,5 +91,12 @@ public class ServiceRequestCustomerAcceptanceService {
         serviceRequest.setStatus(ServiceRequestStatus.IN_PROGRESS);
         serviceRequest.setAcceptedSpecialist(relation.getSpecialist());
         serviceRequestRepository.save(serviceRequest);
+
+        announcementService.sendAnnouncementToUser(
+                relation.getSpecialist(),
+                AnnouncementMessage.CUSTOMER_ACCEPTS_SPECIALIST_ANNOUNCEMENT
+                        .getMessage()
+                        .formatted(relation.getServiceRequest().getId())
+        );
     }
 }

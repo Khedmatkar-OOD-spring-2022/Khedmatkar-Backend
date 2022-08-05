@@ -7,6 +7,8 @@ import com.khedmatkar.demo.exception.ServiceRequestNotRelatedToSpecialistExcepti
 import com.khedmatkar.demo.messaging.entity.Chat;
 import com.khedmatkar.demo.messaging.entity.ChatStatus;
 import com.khedmatkar.demo.messaging.repository.ChatRepository;
+import com.khedmatkar.demo.notification.service.AnnouncementMessage;
+import com.khedmatkar.demo.notification.service.AnnouncementService;
 import com.khedmatkar.demo.service.domain.ServiceRequestAcceptanceCommand;
 import com.khedmatkar.demo.service.entity.ServiceRequestSpecialist;
 import com.khedmatkar.demo.service.entity.ServiceRequestSpecialistStatus;
@@ -24,16 +26,19 @@ public class ServiceRequestSpecialistAcceptanceService {
     private final ServiceRequestSpecialistRepository serviceRequestSpecialistRepository;
     private final ServiceRequestSpecialistFinderService serviceRequestSpecialistFinderService;
     private final ChatRepository chatRepository;
+    private final AnnouncementService announcementService;
 
     public ServiceRequestSpecialistAcceptanceService(
             ServiceRequestRepository serviceRequestRepository,
             ServiceRequestSpecialistRepository serviceRequestSpecialistRepository,
             ServiceRequestSpecialistFinderService serviceRequestSpecialistFinderService,
-            ChatRepository chatRepository) {
+            ChatRepository chatRepository,
+            AnnouncementService announcementService) {
         this.serviceRequestRepository = serviceRequestRepository;
         this.serviceRequestSpecialistRepository = serviceRequestSpecialistRepository;
         this.serviceRequestSpecialistFinderService = serviceRequestSpecialistFinderService;
         this.chatRepository = chatRepository;
+        this.announcementService = announcementService;
     }
 
     @RolesAllowed("ROLE_SPECIALIST")
@@ -55,8 +60,6 @@ public class ServiceRequestSpecialistAcceptanceService {
         } else {
             reject(relation);
         }
-
-        // todo: maybe send notification to customer
     }
 
     private void accept(ServiceRequestSpecialist relation) {
@@ -73,6 +76,13 @@ public class ServiceRequestSpecialistAcceptanceService {
         serviceRequest.setStatus(ServiceRequestStatus.WAITING_FOR_CUSTOMER_ACCEPTANCE);
         serviceRequestRepository.save(serviceRequest);
         serviceRequestSpecialistRepository.save(relation);
+
+        announcementService.sendAnnouncementToUser(
+                serviceRequest.getCustomer(),
+                AnnouncementMessage.SPECIALIST_ACCEPTS_SERVICE_ANNOUNCEMENT
+                        .getMessage()
+                        .formatted(serviceRequest.getId())
+        );
     }
 
     private void reject(ServiceRequestSpecialist relation) {
@@ -82,5 +92,12 @@ public class ServiceRequestSpecialistAcceptanceService {
         serviceRequestRepository.save(serviceRequest);
         serviceRequestSpecialistRepository.save(relation);
         serviceRequestSpecialistFinderService.findSpecialistForServiceRequest(serviceRequest);
+
+        announcementService.sendAnnouncementToUser(
+                serviceRequest.getCustomer(),
+                AnnouncementMessage.SPECIALIST_REJECTS_SERVICE_ANNOUNCEMENT
+                        .getMessage()
+                        .formatted(serviceRequest.getId())
+        );
     }
 }

@@ -1,5 +1,6 @@
 package com.khedmatkar.demo.messaging.controller;
 
+import com.khedmatkar.demo.account.entity.UserType;
 import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.exception.ServiceRequestNotFoundException;
 import com.khedmatkar.demo.messaging.dto.ChatDTO;
@@ -15,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +39,8 @@ public class ChatController {
         this.accountService = accountService;
     }
 
-    @PostMapping("/") //todo security checking
+    @RolesAllowed(UserType.Role.USER)
+    @PostMapping("/")
     public void sendMessage(
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
             @RequestBody MessageDTO dto) {
@@ -55,7 +58,8 @@ public class ChatController {
                 .build());
     }
 
-    @GetMapping("/{id}") //todo security checking
+    @RolesAllowed(UserType.Role.USER)
+    @GetMapping("/{id}")
     @Transactional
     public ChatDTO getChat(@PathVariable(name = "id") Long id) {
         Chat chat = chatRepository.findById(id).orElseThrow(
@@ -76,7 +80,8 @@ public class ChatController {
                 .build();
     }
 
-    @GetMapping("/serviceRequest/{id}") //todo security checking
+    @RolesAllowed(UserType.Role.USER)
+    @GetMapping("/serviceRequest/{id}")
     @Transactional
     public List<ChatDTO> getChats(@PathVariable(name = "id") Long serviceRequestId) {
         var serviceRequest = serviceRequestRepository.findById(serviceRequestId).orElseThrow(

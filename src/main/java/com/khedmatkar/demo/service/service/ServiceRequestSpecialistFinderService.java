@@ -4,6 +4,8 @@ import com.khedmatkar.demo.account.entity.Customer;
 import com.khedmatkar.demo.account.entity.Specialist;
 import com.khedmatkar.demo.account.repository.SpecialistRepository;
 import com.khedmatkar.demo.exception.SpecialistNotFoundException;
+import com.khedmatkar.demo.notification.service.AnnouncementMessage;
+import com.khedmatkar.demo.notification.service.AnnouncementService;
 import com.khedmatkar.demo.service.domain.SpecialistFinderFactory;
 import com.khedmatkar.demo.service.dto.ServiceRequestCreationDTO;
 import com.khedmatkar.demo.service.entity.ServiceRequest;
@@ -28,17 +30,19 @@ public class ServiceRequestSpecialistFinderService {
     private final SpecialistFinderFactory candidateFinderFactory;
     private final ServiceRequestSpecialistRepository serviceRequestSpecialistRepository;
     private final SpecialistRepository specialistRepository;
+    private final AnnouncementService announcementService;
 
     public ServiceRequestSpecialistFinderService(ServiceRequestRepository serviceRequestRepository,
                                                  SpecialtyRepository specialtyRepository,
                                                  SpecialistFinderFactory candidateFinderFactory,
                                                  ServiceRequestSpecialistRepository serviceRequestSpecialistRepository,
-                                                 SpecialistRepository specialistRepository) {
+                                                 SpecialistRepository specialistRepository, AnnouncementService announcementService) {
         this.serviceRequestRepository = serviceRequestRepository;
         this.specialtyRepository = specialtyRepository;
         this.candidateFinderFactory = candidateFinderFactory;
         this.serviceRequestSpecialistRepository = serviceRequestSpecialistRepository;
         this.specialistRepository = specialistRepository;
+        this.announcementService = announcementService;
     }
 
     @Transactional
@@ -90,5 +94,12 @@ public class ServiceRequestSpecialistFinderService {
         serviceRequestSpecialistRepository.save(item);
         serviceRequest.setStatus(ServiceRequestStatus.WAITING_FOR_SPECIALIST_ACCEPTANCE);
         serviceRequestRepository.save(serviceRequest);
+
+        announcementService.sendAnnouncementToUser(
+                specialist,
+                AnnouncementMessage.SPECIALIST_IS_CHOSEN_FOR_SERVICE_ANNOUNCEMENT
+                        .getMessage()
+                        .formatted(serviceRequest.getId())
+        );
     }
 }

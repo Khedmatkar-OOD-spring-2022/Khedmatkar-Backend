@@ -43,7 +43,7 @@ create table admins
         constraint admins_pkey
             primary key
         constraint fkanhsicqm3lc8ya77tr7r0je18
-            references users
+            references users on update cascade on delete cascade
 );
 
 alter table admins owner to postgres;
@@ -52,7 +52,7 @@ create table admin_permissions
 (
     admin_id bigint not null
         constraint fk7vyuc2dwnyqi0v44ab5n5faca
-            references admins,
+            references admins on update cascade on delete cascade,
     permission varchar(255)
 );
 
@@ -64,7 +64,7 @@ create table customers
         constraint customers_pkey
             primary key
         constraint fkpog72rpahj62h7nod9wwc28if
-            references users
+            references users  on update cascade on delete cascade
 );
 
 alter table customers owner to postgres;
@@ -75,7 +75,7 @@ create table specialists
         constraint specialists_pkey
             primary key
         constraint fkiau8ybic92gu8g87fo4evn8o5
-            references users
+            references users  on update cascade on delete cascade
 );
 
 alter table specialists owner to postgres;
@@ -94,7 +94,7 @@ create table certificates
     status varchar(255) not null,
     specialist_id bigint
         constraint fk1ur5cwg0g5inbbwl6atrxga56
-            references specialists,
+            references specialists  on update cascade on delete cascade,
     specialty_id bigint
         constraint fk7ifa4p69ecvp6cneegv7trk4x
             references specialties
@@ -122,7 +122,7 @@ create table service_requests
             references specialists,
     customer_id bigint
         constraint fkdc3ls1bqnn3dop9b6eeyxplsc
-            references customers,
+            references customers  on update cascade on delete set null ,
     specialty_id bigint
         constraint fk5mxofpqx1pl5a307tpw1oe10i
             references specialties
@@ -144,10 +144,10 @@ create table service_request_specialists
     status varchar(255),
     service_request_id bigint
         constraint fkfahusgdc3p0jjbas2bhsnkix4
-            references service_requests,
+            references service_requests on update cascade on delete cascade,
     specialist_id bigint
         constraint fkiu3h10gjl13gvk3uvclyn08ot
-            references specialists
+            references specialists on update cascade on delete cascade
 );
 
 alter table service_request_specialists owner to postgres;
@@ -169,10 +169,10 @@ create table chats
             references service_request_specialists,
     usera_id bigint
         constraint fkhnqd0iku19dodg311b20dsfc5
-            references users,
+            references users  on update cascade on delete cascade,
     userb_id bigint
         constraint fk22qq6qvt63wk2p47wejepre9c
-            references users
+            references users  on update cascade on delete cascade
 );
 
 alter table chats owner to postgres;
@@ -191,10 +191,10 @@ create table messages
     text varchar(255),
     chat_id bigint
         constraint fk64w44ngcpqp99ptcb9werdfmb
-            references chats,
+            references chats on update cascade on delete cascade,
     sender_id bigint
         constraint fk4ui4nnwntodh6wjvck53dbk9m
-            references users
+            references users on update cascade on delete cascade
 );
 
 alter table messages owner to postgres;

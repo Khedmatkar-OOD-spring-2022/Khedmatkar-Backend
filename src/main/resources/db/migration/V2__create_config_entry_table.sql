@@ -17,3 +17,6 @@ create table config_entries
 
 insert into config_entries (key, value)
 values ('CONCURRENT_ONGOING_SERVICES_LIMIT', '10000');
+
+insert into config_entries (key, value)
+values ('SPECIALIST_FINDER_STRATEGY', 'com.khedmatkar.demo.service.domain.RandomSpecialistFinder');

@@ -1,10 +1,13 @@
 package com.khedmatkar.demo.service.service;
 
 import com.khedmatkar.demo.account.entity.Customer;
+import com.khedmatkar.demo.account.entity.Specialist;
 import com.khedmatkar.demo.account.entity.UserType;
 import com.khedmatkar.demo.exception.CustomerNotValidException;
 import com.khedmatkar.demo.exception.ServiceRequestCancelWrongStateException;
 import com.khedmatkar.demo.exception.ServiceRequestNotFoundException;
+import com.khedmatkar.demo.notification.service.AnnouncementMessage;
+import com.khedmatkar.demo.notification.service.AnnouncementService;
 import com.khedmatkar.demo.service.entity.ServiceRequest;
 import com.khedmatkar.demo.service.entity.ServiceRequestStatus;
 import com.khedmatkar.demo.service.repository.ServiceRequestRepository;
@@ -17,9 +20,13 @@ import java.util.Arrays;
 @Service
 public class ServiceRequestCustomerCancellationService {
     private final ServiceRequestRepository serviceRequestRepository;
+    private final AnnouncementService announcementService;
 
-    public ServiceRequestCustomerCancellationService(ServiceRequestRepository serviceRequestRepository) {
+    public ServiceRequestCustomerCancellationService(
+            ServiceRequestRepository serviceRequestRepository,
+            AnnouncementService announcementService) {
         this.serviceRequestRepository = serviceRequestRepository;
+        this.announcementService = announcementService;
     }
 
     @RolesAllowed(UserType.Role.CUSTOMER)
@@ -32,7 +39,17 @@ public class ServiceRequestCustomerCancellationService {
         }
         cancel(serviceRequest);
         serviceRequestRepository.save(serviceRequest);
-        // todo: send notification to specialist if in service request is in progress
+
+
+        var acceptedSpecialist = serviceRequest.getAcceptedSpecialist();
+        if (acceptedSpecialist != null) {
+            announcementService.sendAnnouncementToUser(
+                    acceptedSpecialist,
+                    AnnouncementMessage.CUSTOMER_CANCELS_SERVICE_ANNOUNCEMENT
+                            .getMessage()
+                            .formatted(serviceRequest.getId())
+            );
+        }
     }
 
     public void cancel(ServiceRequest serviceRequest) {
