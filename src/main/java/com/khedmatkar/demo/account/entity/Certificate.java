@@ -27,4 +27,5 @@ public class Certificate extends AbstractEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ValidationStatus status;
+    private String filePath;
 }

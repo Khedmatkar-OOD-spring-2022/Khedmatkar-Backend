@@ -18,6 +18,7 @@ public class CertificateProfileDTO {
     public Long specialtyId;
     public ValidationStatus status;
     public SpecialtyDTO specialtyDTO;
+    public String filePath;
 
     public static CertificateProfileDTO from(Certificate certificate) {
         return CertificateProfileDTO.builder()
@@ -25,6 +26,7 @@ public class CertificateProfileDTO {
                 .specialtyId(certificate.getSpecialty().getId())
                 .status(certificate.getStatus())
                 .specialtyDTO(SpecialtyDTO.from(certificate.getSpecialty()))
+                .filePath(certificate.getFilePath())
                 .build();
     }
 }

@@ -3,35 +3,42 @@ package com.khedmatkar.demo.account.controller;
 import com.khedmatkar.demo.account.dto.CertificateProfileDTO;
 import com.khedmatkar.demo.account.entity.*;
 import com.khedmatkar.demo.account.service.AccountService;
-import com.khedmatkar.demo.account.dto.CertificateDTO;
 import com.khedmatkar.demo.account.repository.CertificateRepository;
 import com.khedmatkar.demo.exception.CertificateNotFoundException;
 import com.khedmatkar.demo.exception.SpecialistNotFoundException;
 import com.khedmatkar.demo.service.repository.SpecialtyRepository;
+import com.khedmatkar.demo.storage.StorageService;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/certificates")
 public class CertificateRestController {
-
     private final CertificateRepository certificateRepository;
     private final SpecialtyRepository specialtyRepository;
     private final AccountService accountService;
+    private final StorageService storageService;
+    private final HttpServletRequest request;
+
 
     public CertificateRestController(
             CertificateRepository certificateRepository,
             SpecialtyRepository specialtyRepository,
-            AccountService accountService) {
+            AccountService accountService, StorageService storageService, HttpServletRequest request) {
         this.certificateRepository = certificateRepository;
         this.specialtyRepository = specialtyRepository;
         this.accountService = accountService;
+        this.storageService = storageService;
+        this.request = request;
     }
 
 
@@ -85,17 +92,21 @@ public class CertificateRestController {
     @Secured({"ROLE_SPECIALIST"})
     public void addCertificate(
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
-            @RequestBody CertificateDTO dto) {
+            @RequestParam(name = "file") MultipartFile file,
+            @RequestParam(name = "specialtyId") Long id) throws IOException {
 
         var specialist = (Specialist) accountService.findConcreteUserClassFromUserDetails(userDetails);
 
-        var specialty = specialtyRepository.findById(dto.specialtyId)
+        var specialty = specialtyRepository.findById(id)
                 .orElseThrow(SpecialistNotFoundException::new);
+
+        var path = storageService.storeFile(file);
 
         Certificate certificate = Certificate.builder()
                 .specialist(specialist)
                 .specialty(specialty)
                 .status(ValidationStatus.PENDING)
+                .filePath(path)
                 .build();
 
         certificateRepository.save(certificate);
