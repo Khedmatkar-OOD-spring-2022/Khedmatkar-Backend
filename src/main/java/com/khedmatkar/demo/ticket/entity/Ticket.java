@@ -16,6 +16,7 @@ import javax.persistence.*;
 @SuperBuilder(toBuilder = true)
 @Getter
 @Setter
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "tickets")
 public class Ticket extends AbstractEntity {
 
