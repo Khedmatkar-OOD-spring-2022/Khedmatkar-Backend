@@ -12,6 +12,7 @@ import com.khedmatkar.demo.evaluation.service.QuestionService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ public class AnswerController {
 
     @GetMapping("/")
     @RolesAllowed(AdminPermission.Role.QUESTIONNAIRE_RW)
+    @Transactional
     public List<AnswerDTO> getAllAnswers() {
         List<Answer> answers = answerService.getAllAnswers();
         return answers.stream()
@@ -36,6 +38,7 @@ public class AnswerController {
     }
 
     @GetMapping("/{id}/")
+    @Transactional
     @RolesAllowed(AdminPermission.Role.QUESTIONNAIRE_RW)
     public AnswerDTO getQuestionById(@PathVariable(name = "id") Long id) {
         Answer answer = answerService.getAnswer(id);

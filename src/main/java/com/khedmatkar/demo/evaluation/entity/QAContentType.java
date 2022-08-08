@@ -1,7 +1,7 @@
 package com.khedmatkar.demo.evaluation.entity;
 
 public enum QAContentType {
-    SCORED,
+    SCORE,
     DOUBLE_CHOICE,
     TEXT,
     MULTIPLE_CHOICE

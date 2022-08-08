@@ -13,30 +13,32 @@ import java.util.Objects;
 @SuperBuilder(toBuilder = true)
 @Getter
 @Setter
-public class TextContentFactory implements QAContentAbstractFactory {
+public class DoubleChoiceContentFactory implements QAContentAbstractFactory {
 
-    private String answerText;
+    private String answerChoice;
     private String questionText;
-    private Integer answerWordLength;
+    private String choice1;
+    private String choice2;
 
 
     @Override
     public QuestionContent createQuestionContent() {
-        return TextQuestion.builder()
-                .contentType(QAContentType.TEXT)
+        return DoubleChoiceQuestion.builder()
+                .contentType(QAContentType.DOUBLE_CHOICE)
                 .questionText(questionText)
-                .answerWordLength(Objects.requireNonNullElse(answerWordLength, TextQuestion.DEFAULT_ANSWER_WORD_LENGTH))
+                .choice1(Objects.requireNonNullElse(choice1, DoubleChoiceQuestion.DEFAULT_CHOICE1))
+                .choice2(Objects.requireNonNullElse(choice2, DoubleChoiceQuestion.DEFAULT_CHOICE2))
                 .build();
     }
 
     @Override
     public AnswerContent createAnswerContent() {
-        if (answerText.length() > answerWordLength) {
+        if (!(answerChoice.equals(choice1) || answerChoice.equals(choice2))) {
             throw new AnswerCreationException();
         }
-        return TextAnswer.builder()
-                .contentType(QAContentType.TEXT)
-                .text(answerText)
+        return DoubleChoiceAnswer.builder()
+                .contentType(QAContentType.DOUBLE_CHOICE)
+                .answerChoice(answerChoice)
                 .build();
     }
 }

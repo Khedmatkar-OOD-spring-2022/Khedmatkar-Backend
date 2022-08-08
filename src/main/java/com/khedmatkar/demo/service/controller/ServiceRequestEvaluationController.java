@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,14 +33,17 @@ public class ServiceRequestEvaluationController {
 
     @PostMapping("/{id}/finish")
     @RolesAllowed({UserType.Role.SPECIALIST, AdminPermission.Role.SERVICE_W})
-    public void finishProgress(@PathVariable(name = "id") Long id) {
-        serviceRequestEvaluationService.finishServiceRequestProgress(id);
+    public void finishProgress(@AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
+                               @PathVariable(name = "id") Long id) {
+        User user = accountService.findUserFromUserDetails(userDetails);
+        serviceRequestEvaluationService.finishServiceRequestProgress(id, user);
     }
 
     @GetMapping("/{id}/questionnaire")
     @RolesAllowed({UserType.Role.CUSTOMER, UserType.Role.SPECIALIST})
+    @Transactional
     public List<QuestionDTO> getQuestionnaire(@AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
-                                           @PathVariable(name = "id") Long id){
+                                              @PathVariable(name = "id") Long id) {
         User user = accountService.findUserFromUserDetails(userDetails);
         List<Question> questions = serviceRequestEvaluationService.getQuestionnaire(id, user);
         return questions.stream()
