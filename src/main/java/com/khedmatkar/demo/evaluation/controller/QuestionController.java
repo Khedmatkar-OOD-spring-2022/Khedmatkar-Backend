@@ -5,6 +5,7 @@ import com.khedmatkar.demo.account.entity.User;
 import com.khedmatkar.demo.account.entity.UserType;
 import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.evaluation.dto.QuestionDTO;
+import com.khedmatkar.demo.evaluation.entity.Question;
 import com.khedmatkar.demo.evaluation.service.QuestionService;
 import com.khedmatkar.demo.ticket.dto.TechnicalIssueDTO;
 import com.khedmatkar.demo.ticket.dto.TicketDTO;
@@ -36,28 +37,25 @@ public class QuestionController {
         questionService.create(dto);
     }
 
-//    @GetMapping("/")
-//    @Transactional
-//    public List<TechnicalIssueDTO> getAllTechnicalIssues(@AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails) {
-//        User user = accountService.findConcreteUserClassFromUserDetails(userDetails);
-//        var technicalIssues = questionService.getTechnicalIssues(user);
-//        return technicalIssues.stream()
-//                .map(TechnicalIssueDTO::from)
-//                .collect(Collectors.toList());
-//    }
-//
-//    @PostMapping("/{id}/answer")
-//    @Transactional
-//    public void answerTechnicalIssue(@AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
-//                                     @PathVariable(name = "id") Long id,
-//                                     @RequestBody @Valid TicketDTO dto) {
-//        User user = accountService.findConcreteUserClassFromUserDetails(userDetails);
-//        questionService.answerTechnicalIssue(id, user, dto);
-//    }
-//
-//    @PostMapping("/{id}/close")
-//    @RolesAllowed({AdminPermission.Role.TECHNICAL_ISSUE_RW})
-//    public void closeTechnicalIssue(@PathVariable(name = "id") Long id) {
-//        questionService.closeTechnicalIssue(id);
-//    }
+    @GetMapping("/")
+    @RolesAllowed(AdminPermission.Role.QUESTIONNAIRE_RW)
+    public List<QuestionDTO> getAllQuestions() {
+        List<Question> questions = questionService.getAllQuestions();
+        return questions.stream()
+                .map(QuestionDTO::from)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}/")
+    @RolesAllowed(AdminPermission.Role.QUESTIONNAIRE_RW)
+    public QuestionDTO getQuestionById(@PathVariable(name = "id") Long id) {
+        Question question = questionService.getQuestion(id);
+        return QuestionDTO.from(question);
+    }
+
+    @DeleteMapping("/{id}/")
+    @RolesAllowed({AdminPermission.Role.TECHNICAL_ISSUE_RW})
+    public void removeQuestion(@PathVariable(name = "id") Long id) {
+        questionService.deleteQuestion(id);
+    }
 }

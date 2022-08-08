@@ -9,10 +9,12 @@ import com.khedmatkar.demo.evaluation.factory.TextContentFactory;
 import com.khedmatkar.demo.evaluation.repository.QuestionContentRepository;
 import com.khedmatkar.demo.evaluation.repository.QuestionRepository;
 import com.khedmatkar.demo.evaluation.repository.TextQuestionRepository;
+import com.khedmatkar.demo.exception.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -20,15 +22,12 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final QuestionContentRepository questionContentRepository;
-    private final TextQuestionRepository textQuestionRepository;
 
 
     public QuestionService(QuestionRepository questionRepository,
-                           QuestionContentRepository questionContentRepository,
-                           TextQuestionRepository textQuestionRepository) {
+                           QuestionContentRepository questionContentRepository) {
         this.questionRepository = questionRepository;
         this.questionContentRepository = questionContentRepository;
-        this.textQuestionRepository = textQuestionRepository;
     }
 
     @Transactional
@@ -48,6 +47,21 @@ public class QuestionService {
         question.setContent(questionContent);
         questionContentRepository.save(questionContent);
         questionRepository.save(question);
+    }
+
+    @Transactional
+    public List<Question> getAllQuestions() {
+        return questionRepository.findAll();
+    }
+
+    @Transactional
+    public Question getQuestion(Long id) {
+        return questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Transactional
+    public void deleteQuestion(Long id) {
+        questionRepository.deleteById(id);
     }
 }
 
