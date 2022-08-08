@@ -2,7 +2,6 @@ package com.khedmatkar.demo.evaluation.entity;
 
 import com.khedmatkar.demo.AbstractEntity;
 import com.khedmatkar.demo.account.entity.User;
-import com.khedmatkar.demo.evaluation.dto.AnswerDTO;
 import com.khedmatkar.demo.service.entity.ServiceRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +22,7 @@ public class Answer extends AbstractEntity {
     private AnswerContent content;
 
     @OneToOne
-    private User user;
+    private User answerer;
 
     @OneToOne
     private Question question;

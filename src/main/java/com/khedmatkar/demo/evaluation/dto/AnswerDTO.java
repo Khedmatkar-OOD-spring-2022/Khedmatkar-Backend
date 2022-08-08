@@ -31,7 +31,7 @@ public class AnswerDTO {
                 .id(answer.getId())
                 .questionId(answer.getQuestion().getId())
                 .serviceRequestId(answer.getServiceRequest().getId())
-                .answererEmail(answer.getUser().getEmail())
+                .answererEmail(answer.getAnswerer().getEmail())
                 .content(AnswerContentDTO.from(answer.getContent()))
                 .build();
     }
