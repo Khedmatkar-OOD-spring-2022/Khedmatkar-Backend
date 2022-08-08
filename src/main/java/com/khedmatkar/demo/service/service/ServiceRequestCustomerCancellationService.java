@@ -53,7 +53,7 @@ public class ServiceRequestCustomerCancellationService {
     }
 
     public void cancel(ServiceRequest serviceRequest) {
-        var nonAcceptableStatuses = Arrays.asList(ServiceRequestStatus.IN_PROGRESS, ServiceRequestStatus.EVALUATION, ServiceRequestStatus.CANCELED, ServiceRequestStatus.DONE);
+        var nonAcceptableStatuses = Arrays.asList(ServiceRequestStatus.IN_PROGRESS, ServiceRequestStatus.CANCELED, ServiceRequestStatus.DONE);
         if (!nonAcceptableStatuses.contains(serviceRequest.getStatus()))
             serviceRequest.setStatus(ServiceRequestStatus.CANCELED);
         else

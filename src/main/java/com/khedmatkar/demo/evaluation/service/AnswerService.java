@@ -2,15 +2,12 @@ package com.khedmatkar.demo.evaluation.service;
 
 import com.khedmatkar.demo.account.entity.User;
 import com.khedmatkar.demo.evaluation.dto.AnswerDTO;
-import com.khedmatkar.demo.evaluation.entity.Answer;
-import com.khedmatkar.demo.evaluation.entity.AnswerContent;
-import com.khedmatkar.demo.evaluation.entity.Question;
-import com.khedmatkar.demo.evaluation.entity.TextQuestion;
-import com.khedmatkar.demo.evaluation.factory.QAContentFactory;
-import com.khedmatkar.demo.evaluation.factory.TextContentFactory;
+import com.khedmatkar.demo.evaluation.entity.*;
+import com.khedmatkar.demo.evaluation.factory.*;
 import com.khedmatkar.demo.evaluation.repository.AnswerContentRepository;
 import com.khedmatkar.demo.evaluation.repository.AnswerRepository;
 import com.khedmatkar.demo.evaluation.repository.QuestionRepository;
+import com.khedmatkar.demo.exception.AnswerCreationException;
 import com.khedmatkar.demo.exception.AnswerNotMatchException;
 import com.khedmatkar.demo.exception.EntityNotFoundException;
 import com.khedmatkar.demo.exception.UserNotAllowedException;
@@ -20,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -59,11 +57,37 @@ public class AnswerService {
                     TextContentFactory.builder()
                             .questionText(question.getContent().getQuestionText())
                             .answerWordLength(((TextQuestion) question.getContent()).getAnswerWordLength())
-                            .answerText(dto.content.textAnswerDTO.text)
+                            .answerText(Optional.ofNullable(dto.content.textAnswerDTO)
+                                    .orElseThrow(AnswerCreationException::new)
+                                    .text)
                             .build());
-            case SCORED, DOUBLE_CHOICE, MULTIPLE_CHOICE -> {
-                //todo
-            }
+            case SCORE -> answerContent = QAContentFactory.getAnswerContent(
+                    ScoreContentFactory.builder()
+                            .questionText(question.getContent().getQuestionText())
+                            .maxScore(((ScoreQuestion) question.getContent()).getMaxScore())
+                            .minScore(((ScoreQuestion) question.getContent()).getMinScore())
+                            .answerScore(Optional.ofNullable(dto.content.scoreAnswerDTO)
+                                    .orElseThrow(AnswerCreationException::new)
+                                    .score)
+                            .build());
+            case DOUBLE_CHOICE -> answerContent = QAContentFactory.getAnswerContent(
+                    DoubleChoiceContentFactory.builder()
+                            .questionText(question.getContent().getQuestionText())
+                            .choice1(((DoubleChoiceQuestion) question.getContent()).getChoice1())
+                            .choice2(((DoubleChoiceQuestion) question.getContent()).getChoice2())
+                            .answerChoice(Optional.ofNullable(dto.content.doubleChoiceAnswerDTO)
+                                    .orElseThrow(AnswerCreationException::new)
+                                    .answerChoice)
+                            .build());
+            case MULTIPLE_CHOICE -> answerContent = QAContentFactory.getAnswerContent(
+                    MultipleChoiceContentFactory.builder()
+                            .questionText(question.getContent().getQuestionText())
+                            .choices(((MultipleChoiceQuestion) question.getContent()).getChoices())
+                            .isSingleSelection(((MultipleChoiceQuestion) question.getContent()).getIsSingleSelection())
+                            .answerChoices(Optional.ofNullable(dto.content.multipleChoiceAnswerDTO)
+                                    .orElseThrow(AnswerCreationException::new)
+                                    .answerChoices)
+                            .build());
         }
         answer.setContent(answerContent);
         answerContentRepository.save(answerContent);

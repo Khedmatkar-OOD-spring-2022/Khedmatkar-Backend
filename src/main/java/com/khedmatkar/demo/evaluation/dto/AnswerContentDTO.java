@@ -1,9 +1,7 @@
 package com.khedmatkar.demo.evaluation.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.khedmatkar.demo.evaluation.entity.AnswerContent;
-import com.khedmatkar.demo.evaluation.entity.QAContentType;
-import com.khedmatkar.demo.evaluation.entity.TextAnswer;
+import com.khedmatkar.demo.evaluation.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
@@ -18,15 +16,26 @@ public class AnswerContentDTO {
     @JsonProperty("textContent")
     public TextAnswerDTO textAnswerDTO;
 
+    @JsonProperty("scoreContent")
+    public ScoreAnswerDTO scoreAnswerDTO;
+
+    @JsonProperty("doubleChoiceContent")
+    public DoubleChoiceAnswerDTO doubleChoiceAnswerDTO;
+
+    @JsonProperty("multipleChoiceContent")
+    public MultipleChoiceAnswerDTO multipleChoiceAnswerDTO;
+
     public static AnswerContentDTO from(AnswerContent answerContent) {
         AnswerContentDTO answerContentDTO = AnswerContentDTO.builder()
                 .contentType(answerContent.getContentType())
                 .build();
         switch (answerContent.getContentType()) {
-            case SCORED, MULTIPLE_CHOICE, DOUBLE_CHOICE -> {
-                //todo
-            }
             case TEXT -> answerContentDTO.textAnswerDTO = TextAnswerDTO.from((TextAnswer) answerContent);
+            case SCORE -> answerContentDTO.scoreAnswerDTO = ScoreAnswerDTO.from((ScoreAnswer) answerContent);
+            case DOUBLE_CHOICE ->
+                    answerContentDTO.doubleChoiceAnswerDTO = DoubleChoiceAnswerDTO.from((DoubleChoiceAnswer) answerContent);
+            case MULTIPLE_CHOICE ->
+                    answerContentDTO.multipleChoiceAnswerDTO = MultipleChoiceAnswerDTO.from((MultipleChoiceAnswer) answerContent);
         }
         return answerContentDTO;
     }

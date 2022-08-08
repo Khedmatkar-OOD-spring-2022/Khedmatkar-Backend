@@ -1,6 +1,7 @@
 package com.khedmatkar.demo.service.service;
 
 import com.khedmatkar.demo.account.entity.User;
+import com.khedmatkar.demo.account.entity.UserType;
 import com.khedmatkar.demo.evaluation.dto.AnswerDTO;
 import com.khedmatkar.demo.evaluation.entity.Question;
 import com.khedmatkar.demo.evaluation.repository.QuestionRepository;
@@ -36,10 +37,16 @@ public class ServiceRequestEvaluationService {
     }
 
     @Transactional
-    public void finishServiceRequestProgress(Long id) {
+    public void finishServiceRequestProgress(Long id, User user) {
         ServiceRequest serviceRequest = serviceRequestRepository.findById(id)
                 .orElseThrow(ServiceRequestNotFoundException::new);
-        serviceRequest.setStatus(ServiceRequestStatus.EVALUATION);
+        if (serviceRequest.getStatus() != ServiceRequestStatus.IN_PROGRESS
+                // check if user belongs to the service request //todo refactor
+                || !(user.getEmail().equals(serviceRequest.getCustomer().getEmail())
+                || user.getEmail().equals(serviceRequest.getAcceptedSpecialist().getEmail()))) {
+            throw new UserNotAllowedException();
+        }
+        serviceRequest.setStatus(ServiceRequestStatus.DONE);
         serviceRequest.getChat().setStatus(ChatStatus.CLOSED);
         chatRepository.save(serviceRequest.getChat());
         serviceRequestRepository.save(serviceRequest);
@@ -50,7 +57,8 @@ public class ServiceRequestEvaluationService {
     public List<Question> getQuestionnaire(Long id, User user) {
         ServiceRequest serviceRequest = serviceRequestRepository.findById(id)
                 .orElseThrow(ServiceRequestNotFoundException::new);
-        if (serviceRequest.getStatus() != ServiceRequestStatus.EVALUATION
+        if (serviceRequest.getStatus() != ServiceRequestStatus.DONE
+                // check if user belongs to the service request //todo refactor
                 || !(user.getEmail().equals(serviceRequest.getCustomer().getEmail())
                 || user.getEmail().equals(serviceRequest.getAcceptedSpecialist().getEmail()))) {
             throw new UserNotAllowedException();
@@ -62,12 +70,16 @@ public class ServiceRequestEvaluationService {
     public void answerQuestionnaire(Long id, User user, List<AnswerDTO> answersDTO) {
         ServiceRequest serviceRequest = serviceRequestRepository.findById(id)
                 .orElseThrow(ServiceRequestNotFoundException::new);
-        if (serviceRequest.getStatus() != ServiceRequestStatus.EVALUATION) {
+        if ((serviceRequest.getStatus() != ServiceRequestStatus.DONE)
+                // check if user belongs to the service request //todo refactor
+                || !(user.getEmail().equals(serviceRequest.getCustomer().getEmail())
+                || user.getEmail().equals(serviceRequest.getAcceptedSpecialist().getEmail()))
+                // check if user answered questionnaire before
+                || ((user.getType() == UserType.CUSTOMER && serviceRequest.getCustomerQuestionnaire().size() > 0)
+                || (user.getType() == UserType.SPECIALIST && serviceRequest.getSpecialistQuestionnaire().size() > 0))) {
             throw new UserNotAllowedException();
         }
         answersDTO.forEach(answerDTO -> answerService.create(answerDTO, user, serviceRequest));
-        serviceRequest.setStatus(ServiceRequestStatus.DONE);
-        serviceRequestRepository.save(serviceRequest);
         // todo: send notification to user
     }
 }

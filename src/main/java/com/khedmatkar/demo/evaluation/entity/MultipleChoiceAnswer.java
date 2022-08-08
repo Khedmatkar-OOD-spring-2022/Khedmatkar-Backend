@@ -1,22 +1,25 @@
 package com.khedmatkar.demo.evaluation.entity;
 
-import com.khedmatkar.demo.AbstractEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 @Getter
 @Setter
-@Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "answer_contents")
-public class AnswerContent extends AbstractEntity {
+@Table(name = "multiple_choice_answers")
+public class MultipleChoiceAnswer extends AnswerContent {
+
+    @ElementCollection
+    private List<Integer> answerChoices;
 
     @Enumerated(EnumType.STRING)
-    private QAContentType contentType;
+    private QAContentType contentType = QAContentType.MULTIPLE_CHOICE;
+
 }

@@ -15,12 +15,12 @@ import javax.persistence.Table;
 @SuperBuilder(toBuilder = true)
 @Getter
 @Setter
-@Table(name = "text_answers")
-public class TextAnswer extends AnswerContent {
+@Table(name = "double_choice_answers")
+public class DoubleChoiceAnswer extends AnswerContent {
 
-    private String text;
+    private String answerChoice;
 
     @Enumerated(EnumType.STRING)
-    private QAContentType contentType = QAContentType.TEXT;
+    private QAContentType contentType = QAContentType.DOUBLE_CHOICE;
 
 }

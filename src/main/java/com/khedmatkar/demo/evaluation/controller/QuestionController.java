@@ -36,6 +36,7 @@ public class QuestionController {
 
     @GetMapping("/")
     @RolesAllowed(AdminPermission.Role.QUESTIONNAIRE_RW)
+    @Transactional
     public List<QuestionDTO> getAllQuestions() {
         List<Question> questions = questionService.getAllQuestions();
         return questions.stream()
@@ -45,6 +46,7 @@ public class QuestionController {
 
     @GetMapping("/{id}/")
     @RolesAllowed(AdminPermission.Role.QUESTIONNAIRE_RW)
+    @Transactional
     public QuestionDTO getQuestionById(@PathVariable(name = "id") Long id) {
         Question question = questionService.getQuestion(id);
         return QuestionDTO.from(question);

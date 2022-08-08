@@ -13,30 +13,32 @@ import java.util.Objects;
 @SuperBuilder(toBuilder = true)
 @Getter
 @Setter
-public class TextContentFactory implements QAContentAbstractFactory {
+public class ScoreContentFactory implements QAContentAbstractFactory {
 
-    private String answerText;
+    private Integer answerScore;
     private String questionText;
-    private Integer answerWordLength;
+    private Integer maxScore;
+    private Integer minScore;
 
 
     @Override
     public QuestionContent createQuestionContent() {
-        return TextQuestion.builder()
-                .contentType(QAContentType.TEXT)
+        return ScoreQuestion.builder()
+                .contentType(QAContentType.SCORE)
                 .questionText(questionText)
-                .answerWordLength(Objects.requireNonNullElse(answerWordLength, TextQuestion.DEFAULT_ANSWER_WORD_LENGTH))
+                .maxScore(Objects.requireNonNullElse(maxScore, ScoreQuestion.DEFAULT_MAX_SCORE))
+                .minScore(Objects.requireNonNullElse(minScore, ScoreQuestion.DEFAULT_MIN_SCORE))
                 .build();
     }
 
     @Override
     public AnswerContent createAnswerContent() {
-        if (answerText.length() > answerWordLength) {
+        if (answerScore > maxScore || answerScore < minScore) {
             throw new AnswerCreationException();
         }
-        return TextAnswer.builder()
-                .contentType(QAContentType.TEXT)
-                .text(answerText)
+        return ScoreAnswer.builder()
+                .contentType(QAContentType.SCORE)
+                .score(answerScore)
                 .build();
     }
 }
