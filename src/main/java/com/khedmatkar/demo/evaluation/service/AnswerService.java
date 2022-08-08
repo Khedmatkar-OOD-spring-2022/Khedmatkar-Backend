@@ -50,7 +50,7 @@ public class AnswerService {
         }
         Answer answer = Answer.builder()
                 .question(question)
-                .user(answerer)
+                .answerer(answerer)
                 .serviceRequest(serviceRequest)
                 .build();
         AnswerContent answerContent = null;
