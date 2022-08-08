@@ -1,14 +1,13 @@
 package com.khedmatkar.demo.evaluation.service;
 
+import com.khedmatkar.demo.account.entity.UserType;
 import com.khedmatkar.demo.evaluation.dto.QuestionDTO;
 import com.khedmatkar.demo.evaluation.entity.Question;
 import com.khedmatkar.demo.evaluation.entity.QuestionContent;
-import com.khedmatkar.demo.evaluation.entity.TextQuestion;
 import com.khedmatkar.demo.evaluation.factory.QAContentFactory;
 import com.khedmatkar.demo.evaluation.factory.TextContentFactory;
 import com.khedmatkar.demo.evaluation.repository.QuestionContentRepository;
 import com.khedmatkar.demo.evaluation.repository.QuestionRepository;
-import com.khedmatkar.demo.evaluation.repository.TextQuestionRepository;
 import com.khedmatkar.demo.exception.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,6 +61,11 @@ public class QuestionService {
     @Transactional
     public void deleteQuestion(Long id) {
         questionRepository.deleteById(id);
+    }
+
+    @Transactional
+    public List<Question> getQuestionnaire(UserType answererType) {
+        return questionRepository.findAllByAnswererType(answererType);
     }
 }
 

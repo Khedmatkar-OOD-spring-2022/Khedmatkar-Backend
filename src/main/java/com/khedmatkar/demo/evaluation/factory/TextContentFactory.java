@@ -1,6 +1,7 @@
 package com.khedmatkar.demo.evaluation.factory;
 
 import com.khedmatkar.demo.evaluation.entity.*;
+import com.khedmatkar.demo.exception.TextAnswerLengthExceedsException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +33,9 @@ public class TextContentFactory implements QAContentAbstractFactory {
 
     @Override
     public AnswerContent createAnswerContent() {
+        if (answerText.length() > answerWordLength) {
+            throw new TextAnswerLengthExceedsException();
+        }
         return TextAnswer.builder()
                 .contentType(QAContentType.TEXT)
                 .text(answerText)

@@ -22,12 +22,9 @@ import java.util.stream.Collectors;
 @RolesAllowed(UserType.Role.USER)
 @RequestMapping("/api/evaluation/questions")
 public class QuestionController {
-    private final AccountService accountService;
     private final QuestionService questionService;
 
-    public QuestionController(AccountService accountService,
-                              QuestionService questionService) {
-        this.accountService = accountService;
+    public QuestionController(QuestionService questionService) {
         this.questionService = questionService;
     }
 

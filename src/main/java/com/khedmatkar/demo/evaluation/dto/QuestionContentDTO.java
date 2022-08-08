@@ -20,7 +20,7 @@ public class QuestionContentDTO {
     @NotEmpty
     public final String questionText;
 
-    @JsonProperty("text_content")
+    @JsonProperty("textContent")
     public TextQuestionDTO textQuestionDTO;
 
     public static QuestionContentDTO from(QuestionContent questionContent) {
@@ -30,6 +30,7 @@ public class QuestionContentDTO {
                 .build();
         switch (questionContent.getContentType()) {
             case SCORED, MULTIPLE_CHOICE, DOUBLE_CHOICE -> {
+                //todo
             }
             case TEXT -> questionContentDTO.textQuestionDTO = TextQuestionDTO.from((TextQuestion) questionContent);
         }
