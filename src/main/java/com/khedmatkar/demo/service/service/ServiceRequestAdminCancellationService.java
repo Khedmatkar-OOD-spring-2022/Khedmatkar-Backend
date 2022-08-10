@@ -33,7 +33,7 @@ public class ServiceRequestAdminCancellationService {
         cancel(serviceRequest);
         serviceRequestRepository.save(serviceRequest);
 
-        announcementService.sendAnnouncementToUser(
+        announcementService.sendAnnouncementWithEmailToUser(
                 serviceRequest.getCustomer(),
                 AnnouncementMessage.ADMIN_CANCELS_SERVICE_ANNOUNCEMENT,
                 serviceId
@@ -41,7 +41,7 @@ public class ServiceRequestAdminCancellationService {
 
         var acceptedSpecialist = serviceRequest.getAcceptedSpecialist();
         if (acceptedSpecialist != null) {
-            announcementService.sendAnnouncementToUser(
+            announcementService.sendAnnouncementWithEmailToUser(
                     acceptedSpecialist,
                     AnnouncementMessage.ADMIN_CANCELS_SERVICE_ANNOUNCEMENT,
                     serviceId

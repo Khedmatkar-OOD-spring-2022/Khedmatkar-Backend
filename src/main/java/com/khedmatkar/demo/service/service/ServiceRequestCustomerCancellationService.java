@@ -43,7 +43,7 @@ public class ServiceRequestCustomerCancellationService {
 
         var acceptedSpecialist = serviceRequest.getAcceptedSpecialist();
         if (acceptedSpecialist != null) {
-            announcementService.sendAnnouncementToUser(
+            announcementService.sendAnnouncementWithEmailToUser(
                     acceptedSpecialist,
                     AnnouncementMessage.CUSTOMER_CANCELS_SERVICE_ANNOUNCEMENT,
                     serviceRequest.getId()

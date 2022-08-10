@@ -4,13 +4,14 @@ import com.khedmatkar.demo.account.entity.User;
 import com.khedmatkar.demo.account.entity.UserType;
 import com.khedmatkar.demo.evaluation.dto.AnswerDTO;
 import com.khedmatkar.demo.evaluation.entity.Question;
-import com.khedmatkar.demo.evaluation.repository.QuestionRepository;
 import com.khedmatkar.demo.evaluation.service.AnswerService;
 import com.khedmatkar.demo.evaluation.service.QuestionService;
 import com.khedmatkar.demo.exception.ServiceRequestNotFoundException;
 import com.khedmatkar.demo.exception.UserNotAllowedException;
 import com.khedmatkar.demo.messaging.entity.ChatStatus;
 import com.khedmatkar.demo.messaging.repository.ChatRepository;
+import com.khedmatkar.demo.notification.service.AnnouncementMessage;
+import com.khedmatkar.demo.notification.service.AnnouncementService;
 import com.khedmatkar.demo.service.entity.ServiceRequest;
 import com.khedmatkar.demo.service.entity.ServiceRequestStatus;
 import com.khedmatkar.demo.service.repository.ServiceRequestRepository;
@@ -24,15 +25,19 @@ public class ServiceRequestEvaluationService {
     private final ServiceRequestRepository serviceRequestRepository;
     private final QuestionService questionService;
     private final AnswerService answerService;
+    private final AnnouncementService announcementService;
     private final ChatRepository chatRepository;
 
     public ServiceRequestEvaluationService(
             ServiceRequestRepository serviceRequestRepository,
             QuestionService questionService,
-            AnswerService answerService, ChatRepository chatRepository) {
+            AnswerService answerService,
+            AnnouncementService announcementService,
+            ChatRepository chatRepository) {
         this.serviceRequestRepository = serviceRequestRepository;
         this.questionService = questionService;
         this.answerService = answerService;
+        this.announcementService = announcementService;
         this.chatRepository = chatRepository;
     }
 
@@ -50,7 +55,20 @@ public class ServiceRequestEvaluationService {
         serviceRequest.getChat().setStatus(ChatStatus.CLOSED);
         chatRepository.save(serviceRequest.getChat());
         serviceRequestRepository.save(serviceRequest);
-        // todo: send notification to customer and specialist
+
+        // send finish announcement
+        if (user.getType() == UserType.ADMIN) {
+            announcementService.sendAnnouncementWithEmailToUser(
+                    serviceRequest.getAcceptedSpecialist(),
+                    AnnouncementMessage.SPECIALIST_FINISHES_SERVICE_REQUEST,
+                    serviceRequest.getId()
+            );
+        }
+        announcementService.sendAnnouncementWithEmailToUser(
+                serviceRequest.getCustomer(),
+                AnnouncementMessage.SPECIALIST_FINISHES_SERVICE_REQUEST,
+                serviceRequest.getId()
+        );
     }
 
     @Transactional
@@ -80,6 +98,5 @@ public class ServiceRequestEvaluationService {
             throw new UserNotAllowedException();
         }
         answersDTO.forEach(answerDTO -> answerService.create(answerDTO, user, serviceRequest));
-        // todo: send notification to user
     }
 }

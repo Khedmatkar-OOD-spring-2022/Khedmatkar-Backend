@@ -4,6 +4,8 @@ import com.khedmatkar.demo.account.entity.*;
 import com.khedmatkar.demo.exception.EntityNotFoundException;
 import com.khedmatkar.demo.exception.TechnicalIssueIsClosedException;
 import com.khedmatkar.demo.exception.UserNotAllowedException;
+import com.khedmatkar.demo.notification.service.AnnouncementMessage;
+import com.khedmatkar.demo.notification.service.AnnouncementService;
 import com.khedmatkar.demo.ticket.dto.TechnicalIssueDTO;
 import com.khedmatkar.demo.ticket.dto.TicketDTO;
 import com.khedmatkar.demo.ticket.entity.TechnicalIssue;
@@ -23,12 +25,15 @@ public class TechnicalIssueService {
 
     private final TechnicalIssueRepository technicalIssueRepository;
     private final TicketRepository ticketRepository;
+    private final AnnouncementService announcementService;
 
 
     public TechnicalIssueService(TechnicalIssueRepository technicalIssueRepository,
-                                 TicketRepository ticketRepository) {
+                                 TicketRepository ticketRepository,
+                                 AnnouncementService announcementService) {
         this.technicalIssueRepository = technicalIssueRepository;
         this.ticketRepository = ticketRepository;
+        this.announcementService = announcementService;
     }
 
     @Transactional
@@ -51,7 +56,7 @@ public class TechnicalIssueService {
     @Transactional
     public void answerTechnicalIssue(Long id, User answerer, TicketDTO answerDTO) {
         TechnicalIssue technicalIssue = technicalIssueRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        if (answerer.getType() != UserType.ADMIN  && !answerer.getEmail().equals(technicalIssue.getWriter().getEmail())
+        if (answerer.getType() != UserType.ADMIN && !answerer.getEmail().equals(technicalIssue.getWriter().getEmail())
                 || (answerer.getType() == UserType.ADMIN && !((Admin) answerer).has_permission(AdminPermission.TECHNICAL_ISSUE_RW))) {
             throw new UserNotAllowedException();
         }
@@ -62,6 +67,12 @@ public class TechnicalIssueService {
         technicalIssue.getAnswers().add(answer);
         ticketRepository.save(answer);
         technicalIssueRepository.save(technicalIssue);
+        if (answerer.getType() == UserType.ADMIN)
+            announcementService.sendAnnouncementWithEmailToUser(
+                    technicalIssue.getWriter(),
+                    AnnouncementMessage.ADMIN_ANSWERS_TECHNICAL_ISSUE,
+                    id
+            );
     }
 
     @Transactional

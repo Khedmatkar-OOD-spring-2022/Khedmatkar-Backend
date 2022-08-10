@@ -66,10 +66,11 @@ public class AdminController {
         admin.setPermissionsFromString(dto.permissions);
         adminRepository.save(admin);
 
-        announcementService.sendAnnouncementToUser(
+        announcementService.sendAnnouncementWithEmailToUser(
                 admin,
                 AnnouncementMessage.ADMIN_CREATION_ANNOUNCEMENT,
-                admin.getFirstName()
+                admin.getFirstName(),
+                admin.getPassword()
         );
 
         return AdminDTO.builder()
@@ -101,7 +102,7 @@ public class AdminController {
         admin.setPermissionsFromString(dto.permissions);
         adminRepository.save(admin);
 
-        announcementService.sendAnnouncementToUser(
+        announcementService.sendAnnouncementWithEmailToUser(
                 admin,
                 AnnouncementMessage.ADMIN_PERMISSIONS_UPDATE_ANNOUNCEMENT
         );

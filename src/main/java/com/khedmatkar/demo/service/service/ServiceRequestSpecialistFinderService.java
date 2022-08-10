@@ -74,7 +74,10 @@ public class ServiceRequestSpecialistFinderService {
             findSpecialistForServiceRequest(serviceRequest);
         }
 
-        announcementService.sendAnnouncementWithEmailToUser(customer, AnnouncementMessage.CUSTOMER_CREATES_SERVICE_REQUEST);
+        announcementService.sendAnnouncementWithEmailToUser(
+                customer,
+                AnnouncementMessage.CUSTOMER_CREATES_SERVICE_REQUEST
+        );
     }
 
 
