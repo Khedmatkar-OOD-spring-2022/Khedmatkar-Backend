@@ -45,9 +45,8 @@ public class ServiceRequestCustomerCancellationService {
         if (acceptedSpecialist != null) {
             announcementService.sendAnnouncementToUser(
                     acceptedSpecialist,
-                    AnnouncementMessage.CUSTOMER_CANCELS_SERVICE_ANNOUNCEMENT
-                            .getMessage()
-                            .formatted(serviceRequest.getId())
+                    AnnouncementMessage.CUSTOMER_CANCELS_SERVICE_ANNOUNCEMENT,
+                    serviceRequest.getId()
             );
         }
     }

@@ -12,12 +12,14 @@ import java.time.LocalDateTime;
 public class AnnouncementDTO {
     public LocalDateTime creation;
     public String message;
+    public String subject;
 
 
     public static AnnouncementDTO from(Announcement announcement) {
         return AnnouncementDTO.builder()
                 .creation(announcement.getCreation())
                 .message(announcement.getMessage())
+                .subject(announcement.getSubject())
                 .build();
     }
 }

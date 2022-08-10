@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="announcements")
+@Table(name = "announcements")
 @SuperBuilder
 @NoArgsConstructor
 @Getter
@@ -19,5 +19,8 @@ public class Announcement extends AbstractEntity {
 
     @ManyToOne
     private User user;
+
+    private String subject;
+
     private String message;
 }

@@ -79,9 +79,8 @@ public class ServiceRequestSpecialistAcceptanceService {
 
         announcementService.sendAnnouncementToUser(
                 serviceRequest.getCustomer(),
-                AnnouncementMessage.SPECIALIST_ACCEPTS_SERVICE_ANNOUNCEMENT
-                        .getMessage()
-                        .formatted(serviceRequest.getId())
+                AnnouncementMessage.SPECIALIST_ACCEPTS_SERVICE_ANNOUNCEMENT,
+                serviceRequest.getId()
         );
     }
 
@@ -95,9 +94,8 @@ public class ServiceRequestSpecialistAcceptanceService {
 
         announcementService.sendAnnouncementToUser(
                 serviceRequest.getCustomer(),
-                AnnouncementMessage.SPECIALIST_REJECTS_SERVICE_ANNOUNCEMENT
-                        .getMessage()
-                        .formatted(serviceRequest.getId())
+                AnnouncementMessage.SPECIALIST_REJECTS_SERVICE_ANNOUNCEMENT,
+                serviceRequest.getId()
         );
     }
 }

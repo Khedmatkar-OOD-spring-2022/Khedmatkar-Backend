@@ -68,8 +68,8 @@ public class AdminController {
 
         announcementService.sendAnnouncementToUser(
                 admin,
-                AnnouncementMessage.ADMIN_CREATION_ANNOUNCEMENT.getMessage()
-                        .formatted(admin.getFirstName())
+                AnnouncementMessage.ADMIN_CREATION_ANNOUNCEMENT,
+                admin.getFirstName()
         );
 
         return AdminDTO.builder()
@@ -103,7 +103,7 @@ public class AdminController {
 
         announcementService.sendAnnouncementToUser(
                 admin,
-                AnnouncementMessage.ADMIN_PERMISSIONS_UPDATE_ANNOUNCEMENT.getMessage()
+                AnnouncementMessage.ADMIN_PERMISSIONS_UPDATE_ANNOUNCEMENT
         );
     }
 }

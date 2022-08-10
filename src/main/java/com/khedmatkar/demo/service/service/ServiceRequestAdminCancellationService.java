@@ -33,19 +33,18 @@ public class ServiceRequestAdminCancellationService {
         cancel(serviceRequest);
         serviceRequestRepository.save(serviceRequest);
 
-        String cancellationMessage = AnnouncementMessage.ADMIN_CANCELS_SERVICE_ANNOUNCEMENT.getMessage()
-                .formatted(serviceId);
-
         announcementService.sendAnnouncementToUser(
                 serviceRequest.getCustomer(),
-                cancellationMessage
+                AnnouncementMessage.ADMIN_CANCELS_SERVICE_ANNOUNCEMENT,
+                serviceId
                 );
 
         var acceptedSpecialist = serviceRequest.getAcceptedSpecialist();
         if (acceptedSpecialist != null) {
             announcementService.sendAnnouncementToUser(
                     acceptedSpecialist,
-                    cancellationMessage
+                    AnnouncementMessage.ADMIN_CANCELS_SERVICE_ANNOUNCEMENT,
+                    serviceId
             );
         }
     }

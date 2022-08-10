@@ -73,6 +73,8 @@ public class ServiceRequestSpecialistFinderService {
         } else {
             findSpecialistForServiceRequest(serviceRequest);
         }
+
+        announcementService.sendAnnouncementWithEmailToUser(customer, AnnouncementMessage.CUSTOMER_CREATES_SERVICE_REQUEST);
     }
 
 
@@ -97,9 +99,8 @@ public class ServiceRequestSpecialistFinderService {
 
         announcementService.sendAnnouncementToUser(
                 specialist,
-                AnnouncementMessage.SPECIALIST_IS_CHOSEN_FOR_SERVICE_ANNOUNCEMENT
-                        .getMessage()
-                        .formatted(serviceRequest.getId())
+                AnnouncementMessage.SPECIALIST_IS_CHOSEN_FOR_SERVICE_ANNOUNCEMENT,
+                serviceRequest.getId()
         );
     }
 }
