@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class AnnouncementService {
@@ -34,8 +35,8 @@ public class AnnouncementService {
     }
 
     public void sendEmailToUser(User user, AnnouncementMessage message, Object... message_params) {
-        emailService.send(user.getEmail(), message.getSubject(),
-                message.getMessage().formatted(message_params));
+        CompletableFuture.runAsync(() -> emailService.send(user.getEmail(), message.getSubject(),
+                message.getMessage().formatted(message_params)));
     }
 
     public void sendAnnouncementWithEmailToUser(User user, AnnouncementMessage message, Object... message_params) {

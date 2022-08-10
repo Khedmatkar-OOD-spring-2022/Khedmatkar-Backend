@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum AnnouncementMessage {
+    TEST_ANNOUNCEMENT("این پیام به منظور تست زیر سامانه آگهی ارسال شده است.", "پیام تستی"),
     ADMIN_CREATION_ANNOUNCEMENT("با سلام %s گرامی. حساب کاربری شما توسط مدیر فناوری اطلاعات ایجاد شده است.", "ساخت حساب کاربری ادمین"),
     ADMIN_PERMISSIONS_UPDATE_ANNOUNCEMENT("دسترسی های شما توسط مدیر فناوری اطلاعات به روز شده است.", ""), //todo complete
     ADMIN_CANCELS_SERVICE_ANNOUNCEMENT("کاربر گرامی، درخواست به شماره %s توسط مدیران سامانه لغو شد.", ""),
