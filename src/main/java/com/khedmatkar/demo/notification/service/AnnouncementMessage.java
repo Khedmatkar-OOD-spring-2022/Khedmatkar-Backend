@@ -16,7 +16,7 @@ public enum AnnouncementMessage {
     CUSTOMER_REJECTS_SPECIALIST_ANNOUNCEMENT("کاربر گرامی، همکاری برای درخواست به شماره %s توسط مشتری رد شد.", "رد انجام درخواست خدمت"),
     CUSTOMER_ACCEPTS_SPECIALIST_ANNOUNCEMENT("کاربر گرامی، مشتری همکاری برای درخواست به شماره %s با شما را تایید کرد.", "پذیرش انجام درخواست خدمت"),
     CUSTOMER_CREATES_SERVICE_REQUEST("کاربر گرامی، سفارش شما با موفقیت در سیستم ثبت شد.", "ثبت سفارش"),
-    SPECIALIST_FINISHES_SERVICE_REQUEST("کاربر گرامی، درخواست به شماره %s به پایان رسید.\nلطفا با پر کردن فرم نظرسنجی به ما در سرویس دهی بهتر کمک کنید.", "ثبت سفارش"),
+    SPECIALIST_FINISHES_SERVICE_REQUEST("کاربر گرامی، درخواست به شماره %s به پایان رسید.\nلطفا با پر کردن فرم نظرسنجی به ما در سرویس دهی بهتر کمک کنید.", "اتمام سفارش"),
     ADMIN_ANSWERS_TECHNICAL_ISSUE("کاربر گرامی، به تیکت شماره %s پاسخ داده شد.", "پاسخ به تیکت");
 
 
