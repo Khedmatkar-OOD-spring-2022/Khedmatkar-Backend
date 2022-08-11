@@ -5,6 +5,7 @@ import com.khedmatkar.demo.account.dto.SpecialistSearchDTO;
 import com.khedmatkar.demo.account.service.SpecialistService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ public class SpecialistRestController {
     }
 
     @PostMapping("/search")
+    @Transactional
     public List<SpecialistDTO> searchSpecialists(
             @RequestBody SpecialistSearchDTO dto) {
         return specialistService.searchSpecialists(dto)
