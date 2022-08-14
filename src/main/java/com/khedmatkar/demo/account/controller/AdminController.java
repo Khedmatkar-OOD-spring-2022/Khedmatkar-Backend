@@ -70,7 +70,7 @@ public class AdminController {
                 admin,
                 AnnouncementMessage.ADMIN_CREATION_ANNOUNCEMENT,
                 admin.getFirstName(),
-                admin.getPassword()
+                password
         );
 
         return AdminDTO.builder()
