@@ -35,6 +35,8 @@ public class User extends AbstractEntity {
     @JsonIgnore
     private String password;
 
+    private String profilePicturePath;
+
     public void updateProfile(UserProfileDTO newUser) {
         this.email = newUser.email;
         this.firstName = newUser.firstName;

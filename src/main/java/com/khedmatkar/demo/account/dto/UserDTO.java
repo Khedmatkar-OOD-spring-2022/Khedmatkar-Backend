@@ -26,5 +26,7 @@ public class UserDTO {
 
     @NotEmpty
     public final String type;
+
+    public final String profilePicturePath;
 }
 
