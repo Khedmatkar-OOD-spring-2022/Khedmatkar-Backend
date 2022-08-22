@@ -1,5 +1,6 @@
 package com.khedmatkar.demo.service.dto;
 
+import com.khedmatkar.demo.service.entity.GeoPoint;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
@@ -18,4 +19,6 @@ public class ServiceRequestCreationDTO {
     public Date receptionDate;
 
     public Long specialistId;
+
+    public GeoPoint geoPoint;
 }

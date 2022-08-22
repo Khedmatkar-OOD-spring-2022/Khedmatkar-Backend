@@ -1,6 +1,7 @@
 package com.khedmatkar.demo.service.dto;
 
 import com.khedmatkar.demo.account.dto.UserProfileDTO;
+import com.khedmatkar.demo.service.entity.GeoPoint;
 import com.khedmatkar.demo.service.entity.ServiceRequest;
 import com.khedmatkar.demo.service.entity.ServiceRequestStatus;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class ServiceRequestListViewDTO {
     public SpecialtyDTO specialty;
     public UserProfileDTO acceptedSpecialist;
     public UserProfileDTO candidateSpecialist;
+    public GeoPoint geoPoint;
 
     public static ServiceRequestListViewDTO from(ServiceRequest serviceRequest) {
         return ServiceRequestListViewDTO.builder()
@@ -36,12 +38,12 @@ public class ServiceRequestListViewDTO {
                                 .orElse(null))
                 .candidateSpecialist(
                         serviceRequest.getSpecialistHistory().isEmpty() ? null :
-                        Optional.ofNullable(serviceRequest.getSpecialistHistory()
-                                .get(serviceRequest.getSpecialistHistory().size() - 1).getSpecialist()
-                        )
-                        .map(UserProfileDTO::from)
-                        .orElse(null))
-
+                                Optional.ofNullable(serviceRequest.getSpecialistHistory()
+                                        .get(serviceRequest.getSpecialistHistory().size() - 1).getSpecialist()
+                                )
+                                        .map(UserProfileDTO::from)
+                                        .orElse(null))
+                .geoPoint(serviceRequest.getGeoPoint())
                 .build();
     }
 }

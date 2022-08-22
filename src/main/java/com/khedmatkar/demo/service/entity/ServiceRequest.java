@@ -12,7 +12,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +50,8 @@ public class ServiceRequest extends AbstractEntity {
     private List<Answer> customerQuestionnaire;
     @OneToMany(mappedBy = "serviceRequest")
     private List<Answer> specialistQuestionnaire;
+
+    private GeoPoint geoPoint;
 
     public List<Chat> getChats() {
         return this.getSpecialistHistory().stream()

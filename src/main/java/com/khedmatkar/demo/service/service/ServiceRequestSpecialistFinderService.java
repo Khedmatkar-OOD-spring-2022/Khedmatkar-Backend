@@ -65,6 +65,7 @@ public class ServiceRequestSpecialistFinderService {
                 .specialty(specialty)
                 .specialistHistory(new ArrayList<>())
                 .description(dto.description)
+                .geoPoint(dto.geoPoint)
                 .address(dto.address)
                 .status(ServiceRequestStatus.FINDING_SPECIALIST)
                 .receptionDate(dto.receptionDate)
