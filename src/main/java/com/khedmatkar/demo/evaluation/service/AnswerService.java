@@ -37,7 +37,7 @@ public class AnswerService {
     }
 
     @Transactional
-    public void create(AnswerDTO dto, User answerer, ServiceRequest serviceRequest) {
+    public Answer create(AnswerDTO dto, User answerer, ServiceRequest serviceRequest) {
         Question question = questionRepository.findById(dto.questionId)
                 .orElseThrow(EntityNotFoundException::new);
         if (answerer.getType() != question.getAnswererType()) {
@@ -92,11 +92,17 @@ public class AnswerService {
         answer.setContent(answerContent);
         answerContentRepository.save(answerContent);
         answerRepository.save(answer);
+        return answer;
     }
 
     @Transactional
     public List<Answer> getAllAnswers() {
         return answerRepository.findAll();
+    }
+
+    @Transactional
+    public List<Answer> getAnswersByServiceRequestId(Long id) {
+        return answerRepository.findAllByServiceRequestId(id);
     }
 
     @Transactional

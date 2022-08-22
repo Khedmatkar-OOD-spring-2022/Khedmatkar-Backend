@@ -40,8 +40,18 @@ public class AnswerController {
     @GetMapping("/{id}/")
     @Transactional
     @RolesAllowed(AdminPermission.Role.QUESTIONNAIRE_RW)
-    public AnswerDTO getQuestionById(@PathVariable(name = "id") Long id) {
+    public AnswerDTO getAnswerById(@PathVariable(name = "id") Long id) {
         Answer answer = answerService.getAnswer(id);
         return AnswerDTO.from(answer);
+    }
+
+    @GetMapping("/serviceRequest/{id}/")
+    @Transactional
+    @RolesAllowed(AdminPermission.Role.QUESTIONNAIRE_RW)
+    public List<AnswerDTO> getAnswersByServiceRequestId(@PathVariable(name = "id") Long id) {
+        List<Answer> answers = answerService.getAnswersByServiceRequestId(id);
+        return answers.stream()
+                .map(AnswerDTO::from)
+                .collect(Collectors.toList());
     }
 }
