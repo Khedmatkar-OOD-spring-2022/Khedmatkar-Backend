@@ -1,5 +1,7 @@
 package com.khedmatkar.demo.service.controller;
 
+import com.khedmatkar.demo.exception.SpecialtyHasChildSpecialtiesException;
+import com.khedmatkar.demo.exception.SpecialtyNotFoundException;
 import com.khedmatkar.demo.service.dto.SpecialtyDTO;
 import com.khedmatkar.demo.service.entity.Specialty;
 import com.khedmatkar.demo.service.repository.SpecialtyRepository;
@@ -25,11 +27,7 @@ public class SpecialtyRestController {
     @GetMapping("/{id}")
     public SpecialtyDTO getById(@PathVariable Long id) {
         var specialty = specialtyRepository.findById(id)
-                .orElseThrow(() ->
-                    new ResponseStatusException(
-                            HttpStatus.NOT_FOUND, "entity not found"
-                    )
-                );
+                .orElseThrow(SpecialtyNotFoundException::new);
         return SpecialtyDTO.from(specialty);
     }
 
@@ -80,14 +78,10 @@ public class SpecialtyRestController {
             if (!specialtyRepository.existsByParent(specialty)) {
                 specialtyRepository.delete(specialty);
             } else {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "service type has other service types as children"
-                );
+                throw new SpecialtyHasChildSpecialtiesException();
             }
         } else {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "entity not found"
-            );
+            throw new SpecialtyNotFoundException();
         }
     }
 

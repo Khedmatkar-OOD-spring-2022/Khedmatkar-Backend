@@ -17,7 +17,8 @@ public enum AnnouncementMessage {
     CUSTOMER_ACCEPTS_SPECIALIST_ANNOUNCEMENT("کاربر گرامی، مشتری همکاری برای درخواست به شماره %s با شما را تایید کرد.", "پذیرش انجام درخواست خدمت"),
     CUSTOMER_CREATES_SERVICE_REQUEST("کاربر گرامی، سفارش شما با موفقیت در سیستم ثبت شد.", "ثبت سفارش"),
     SPECIALIST_FINISHES_SERVICE_REQUEST("کاربر گرامی، درخواست به شماره %s به پایان رسید.\nلطفا با پر کردن فرم نظرسنجی به ما در سرویس دهی بهتر کمک کنید.", "اتمام سفارش"),
-    ADMIN_ANSWERS_TECHNICAL_ISSUE("کاربر گرامی، به تیکت شماره %s پاسخ داده شد.", "پاسخ به تیکت");
+    ADMIN_ANSWERS_TECHNICAL_ISSUE("کاربر گرامی، به تیکت شماره %s پاسخ داده شد.", "پاسخ به تیکت"),
+    SERVICE_REQUEST_CANCELED_DUE_TO_LACK_OF_SPECIALISTS(" %s گرامی از شما پوزش میطلبیم. درخواست خدمت به شماره %s به دلیل یافت نشدن متخصص مناسب لغو گردید.", "لغو درخواست خدمت");
 
 
     private final String message;

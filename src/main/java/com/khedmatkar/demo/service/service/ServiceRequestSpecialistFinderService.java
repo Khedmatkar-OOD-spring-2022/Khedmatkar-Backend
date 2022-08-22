@@ -3,7 +3,10 @@ package com.khedmatkar.demo.service.service;
 import com.khedmatkar.demo.account.entity.Customer;
 import com.khedmatkar.demo.account.entity.Specialist;
 import com.khedmatkar.demo.account.repository.SpecialistRepository;
+import com.khedmatkar.demo.exception.NoSuitableCandidateSpecialistFoundException;
 import com.khedmatkar.demo.exception.SpecialistNotFoundException;
+import com.khedmatkar.demo.exception.SpecialtyHasChildSpecialtiesException;
+import com.khedmatkar.demo.exception.SpecialtyNotFoundException;
 import com.khedmatkar.demo.notification.service.AnnouncementMessage;
 import com.khedmatkar.demo.notification.service.AnnouncementService;
 import com.khedmatkar.demo.service.domain.SpecialistFinderFactory;
@@ -16,11 +19,10 @@ import com.khedmatkar.demo.service.repository.ServiceRequestRepository;
 import com.khedmatkar.demo.service.repository.ServiceRequestSpecialistRepository;
 import com.khedmatkar.demo.service.repository.SpecialtyRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 
 @Service
 @Slf4j
@@ -31,32 +33,37 @@ public class ServiceRequestSpecialistFinderService {
     private final ServiceRequestSpecialistRepository serviceRequestSpecialistRepository;
     private final SpecialistRepository specialistRepository;
     private final AnnouncementService announcementService;
+    private final ServiceRequestNoSpecialistCancellerService serviceRequestNoSpecialistCancellerService;
 
     public ServiceRequestSpecialistFinderService(ServiceRequestRepository serviceRequestRepository,
                                                  SpecialtyRepository specialtyRepository,
                                                  SpecialistFinderFactory candidateFinderFactory,
                                                  ServiceRequestSpecialistRepository serviceRequestSpecialistRepository,
-                                                 SpecialistRepository specialistRepository, AnnouncementService announcementService) {
+                                                 SpecialistRepository specialistRepository,
+                                                 AnnouncementService announcementService,
+                                                 ServiceRequestNoSpecialistCancellerService serviceRequestNoSpecialistCancellerService) {
         this.serviceRequestRepository = serviceRequestRepository;
         this.specialtyRepository = specialtyRepository;
         this.candidateFinderFactory = candidateFinderFactory;
         this.serviceRequestSpecialistRepository = serviceRequestSpecialistRepository;
         this.specialistRepository = specialistRepository;
         this.announcementService = announcementService;
+        this.serviceRequestNoSpecialistCancellerService = serviceRequestNoSpecialistCancellerService;
     }
 
     @Transactional
     public void create(ServiceRequestCreationDTO dto, Customer customer) {
         var specialty = specialtyRepository.findById(dto.specialtyId)
-                .orElseThrow(
-                        () -> new ResponseStatusException(
-                                HttpStatus.BAD_REQUEST, "service type has other service types as children"
-                        )
-                );
+                .orElseThrow(SpecialtyNotFoundException::new);
+
+        if (specialtyRepository.existsByParent(specialty)) {
+            throw new SpecialtyHasChildSpecialtiesException();
+        }
 
         var serviceRequest = ServiceRequest.builder()
                 .customer(customer)
                 .specialty(specialty)
+                .specialistHistory(new ArrayList<>())
                 .description(dto.description)
                 .address(dto.address)
                 .status(ServiceRequestStatus.FINDING_SPECIALIST)
@@ -84,7 +91,14 @@ public class ServiceRequestSpecialistFinderService {
     @Transactional
     public void findSpecialistForServiceRequest(ServiceRequest serviceRequest) {
         var specialistFinder = candidateFinderFactory.getSpecialistFinder();
-        var specialist = specialistFinder.findSpecialist(serviceRequest);
+
+        Specialist specialist;
+        try {
+            specialist = specialistFinder.findSpecialist(serviceRequest);
+        } catch (NoSuitableCandidateSpecialistFoundException e) {
+            serviceRequestNoSpecialistCancellerService.noSpecialistCancel(serviceRequest);
+            return;
+        }
 
         setSpecialistForServiceRequest(serviceRequest, specialist);
     }

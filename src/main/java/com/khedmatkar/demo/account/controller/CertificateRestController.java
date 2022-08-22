@@ -6,6 +6,7 @@ import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.repository.CertificateRepository;
 import com.khedmatkar.demo.exception.CertificateNotFoundException;
 import com.khedmatkar.demo.exception.SpecialistNotFoundException;
+import com.khedmatkar.demo.exception.SpecialtyHasChildSpecialtiesException;
 import com.khedmatkar.demo.service.repository.SpecialtyRepository;
 import com.khedmatkar.demo.storage.StorageService;
 import org.springframework.security.access.annotation.Secured;
@@ -99,6 +100,10 @@ public class CertificateRestController {
 
         var specialty = specialtyRepository.findById(id)
                 .orElseThrow(SpecialistNotFoundException::new);
+
+        if (specialtyRepository.existsByParent(specialty)) {
+            throw new SpecialtyHasChildSpecialtiesException();
+        }
 
         var path = storageService.storeFile(file);
 
