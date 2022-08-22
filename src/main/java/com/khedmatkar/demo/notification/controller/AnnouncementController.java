@@ -1,5 +1,6 @@
 package com.khedmatkar.demo.notification.controller;
 
+import com.khedmatkar.demo.AbstractEntity;
 import com.khedmatkar.demo.account.entity.User;
 import com.khedmatkar.demo.account.entity.UserType;
 import com.khedmatkar.demo.account.service.AccountService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +35,7 @@ public class AnnouncementController {
         User user = accountService.findUserFromUserDetails(userDetails);
         return announcementService.getUserAnnouncements(user)
                 .stream()
+                .sorted(Comparator.comparing(AbstractEntity::getCreation).reversed())
                 .map(AnnouncementDTO::from)
                 .collect(Collectors.toList());
     }

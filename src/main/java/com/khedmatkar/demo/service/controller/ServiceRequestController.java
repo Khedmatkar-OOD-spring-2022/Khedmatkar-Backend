@@ -1,5 +1,6 @@
 package com.khedmatkar.demo.service.controller;
 
+import com.khedmatkar.demo.exception.ServiceRequestNotFoundException;
 import com.khedmatkar.demo.service.dto.ServiceRequestListViewDTO;
 import com.khedmatkar.demo.service.entity.ServiceRequestDetailViewDTO;
 import com.khedmatkar.demo.service.repository.ServiceRequestRepository;
@@ -26,11 +27,7 @@ public class ServiceRequestController {
     @Transactional
     public ServiceRequestListViewDTO get(@PathVariable(name = "id") Long id) {
         var serviceRequest = serviceRequestRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                "service request not found"
-                        ));
+                .orElseThrow(ServiceRequestNotFoundException::new);
         return ServiceRequestListViewDTO.from(serviceRequest);
     }
 }

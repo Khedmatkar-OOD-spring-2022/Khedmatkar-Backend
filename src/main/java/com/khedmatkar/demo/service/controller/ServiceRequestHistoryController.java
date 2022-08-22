@@ -1,5 +1,6 @@
 package com.khedmatkar.demo.service.controller;
 
+import com.khedmatkar.demo.AbstractEntity;
 import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.entity.User;
 import com.khedmatkar.demo.service.domain.AdminServiceRequestHistoryFinder;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,11 +41,12 @@ public class ServiceRequestHistoryController {
         var finder = getServiceRequestHistoryFinderForUser(user);
         return finder.getServiceRequests(user)
                 .stream()
+                .sorted(Comparator.comparing(AbstractEntity::getCreation))
                 .map(ServiceRequestListViewDTO::from)
                 .collect(Collectors.toList());
     }
 
-    private ServiceRequestFinder getServiceRequestHistoryFinderForUser(User user) { // todo: do a better design
+    private ServiceRequestFinder getServiceRequestHistoryFinderForUser(User user) { // todo: use factory method pattern in a seperate class
         switch (user.getType()) {
             case CUSTOMER:
                 return context.getBean(CustomerServiceRequestHistoryFinder.class);

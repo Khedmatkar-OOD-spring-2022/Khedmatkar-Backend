@@ -34,8 +34,11 @@ public class ServiceRequestListViewDTO {
                         Optional.ofNullable(serviceRequest.getAcceptedSpecialist())
                                 .map(UserProfileDTO::from)
                                 .orElse(null))
-                .candidateSpecialist(Optional.ofNullable(serviceRequest.getSpecialistHistory() //todo better implementation for setting last candidate
-                                .get(serviceRequest.getSpecialistHistory().size() - 1).getSpecialist())
+                .candidateSpecialist(
+                        serviceRequest.getSpecialistHistory().isEmpty() ? null :
+                        Optional.ofNullable(serviceRequest.getSpecialistHistory()
+                                .get(serviceRequest.getSpecialistHistory().size() - 1).getSpecialist()
+                        )
                         .map(UserProfileDTO::from)
                         .orElse(null))
 

@@ -10,6 +10,7 @@ import com.khedmatkar.demo.service.entity.ServiceRequest;
 import com.khedmatkar.demo.service.entity.ServiceRequestSpecialist;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -29,22 +30,25 @@ public class NewCertificatedSpecialistFinder implements SpecialistFinderStrategy
     public Specialist findSpecialist(ServiceRequest serviceRequest) throws NoSuitableCandidateSpecialistFoundException {
         var limit = Integer.parseInt(
                 configEntryService.getValue(ConfigEntryService.CONCURRENT_ONGOING_SERVICES_LIMIT_KEY)
-                .orElseThrow()
-                .getValue());
+                        .orElseThrow()
+                        .getValue());
+
+        var previousSpecialistIds = serviceRequest.getSpecialistHistory()
+                .stream()
+                .map(ServiceRequestSpecialist::getSpecialist)
+                .map(AbstractEntity::getId)
+                .collect(Collectors.toList());
 
         var candidates =
-                specialistRepository.findAllByCertificateSetSpecialtyAndCertificateSetStatusAndIdNotIn(
+                specialistRepository.findAllByCertificateSetSpecialtyAndCertificateSetStatus(
                         serviceRequest.getSpecialty(),
-                        ValidationStatus.VALID,
-                        serviceRequest.getSpecialistHistory()
-                                .stream()
-                                .map(ServiceRequestSpecialist::getSpecialist)
-                                .map(AbstractEntity::getId)
-                                .collect(Collectors.toList())
+                        ValidationStatus.VALID
                 )
-                .stream()
-                .filter(m -> m.getNumberOfOngoingServices() < limit)
-                .collect(Collectors.toList());
+                        .stream()
+                        .filter(s -> !previousSpecialistIds.contains(s.getId()) )
+                        .filter(m -> m.getNumberOfOngoingServices() < limit)
+                        .collect(Collectors.toList());
+
 
         if (candidates.isEmpty()) {
             throw new NoSuitableCandidateSpecialistFoundException();
