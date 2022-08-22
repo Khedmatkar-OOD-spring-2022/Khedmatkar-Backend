@@ -3,7 +3,6 @@ package com.khedmatkar.demo.notification.service;
 import com.khedmatkar.demo.account.entity.User;
 import com.khedmatkar.demo.notification.entity.Announcement;
 import com.khedmatkar.demo.notification.repository.AnnouncementRepository;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
