@@ -11,4 +11,6 @@ import java.util.List;
 public interface CertificateRepository extends JpaRepository<Certificate, Long> {
 
     List<Certificate> findByStatus(ValidationStatus status);
+
+    List<Certificate> findByStatusAndSpecialtyNameLike(ValidationStatus status, String pattern);
 }
