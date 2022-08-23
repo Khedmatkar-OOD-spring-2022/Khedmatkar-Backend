@@ -3,16 +3,13 @@ package com.khedmatkar.demo.account.controller;
 import com.khedmatkar.demo.account.dto.AdminDTO;
 import com.khedmatkar.demo.account.dto.AdminPermissionDTO;
 import com.khedmatkar.demo.account.entity.*;
-import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.dto.UserDTO;
 import com.khedmatkar.demo.account.repository.AdminRepository;
 import com.khedmatkar.demo.exception.AdminNotFoundException;
 import com.khedmatkar.demo.notification.service.AnnouncementMessage;
 import com.khedmatkar.demo.notification.service.AnnouncementService;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
