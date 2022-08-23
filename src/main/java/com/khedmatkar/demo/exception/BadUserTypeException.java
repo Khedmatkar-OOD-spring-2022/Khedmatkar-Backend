@@ -3,6 +3,6 @@ package com.khedmatkar.demo.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "bad user type")
+@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "نوع حساب کاربری اشتباه است.")
 public class BadUserTypeException extends RuntimeException {
 }
