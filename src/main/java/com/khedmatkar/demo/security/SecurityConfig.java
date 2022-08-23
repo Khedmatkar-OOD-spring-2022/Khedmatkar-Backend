@@ -1,5 +1,6 @@
 package com.khedmatkar.demo.security;
 
+import lombok.extern.log4j.Log4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -9,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -16,8 +18,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 
 
@@ -64,3 +67,17 @@ public class SecurityConfig {
     }
 }
 
+
+@Component
+@Log4j
+class SessionListener implements HttpSessionListener {
+
+    @Override
+    public void sessionCreated(HttpSessionEvent event) {
+        event.getSession().setMaxInactiveInterval(180 * 60);
+    }
+
+    @Override
+    public void sessionDestroyed(HttpSessionEvent event) {
+    }
+}
