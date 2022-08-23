@@ -3,6 +3,7 @@ package com.khedmatkar.demo.service.service;
 import com.khedmatkar.demo.account.entity.User;
 import com.khedmatkar.demo.account.entity.UserType;
 import com.khedmatkar.demo.evaluation.dto.AnswerDTO;
+import com.khedmatkar.demo.evaluation.entity.Answer;
 import com.khedmatkar.demo.evaluation.entity.Question;
 import com.khedmatkar.demo.evaluation.service.AnswerService;
 import com.khedmatkar.demo.evaluation.service.QuestionService;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ServiceRequestEvaluationService {
@@ -75,12 +77,7 @@ public class ServiceRequestEvaluationService {
     public List<Question> getQuestionnaire(Long id, User user) {
         ServiceRequest serviceRequest = serviceRequestRepository.findById(id)
                 .orElseThrow(ServiceRequestNotFoundException::new);
-        if (serviceRequest.getStatus() != ServiceRequestStatus.DONE
-                // check if user belongs to the service request //todo refactor
-                || !(user.getEmail().equals(serviceRequest.getCustomer().getEmail())
-                || user.getEmail().equals(serviceRequest.getAcceptedSpecialist().getEmail()))) {
-            throw new UserNotAllowedException();
-        }
+        checkAccessToQuestionnaire(serviceRequest, user);
         return questionService.getQuestionnaire(user.getType());
     }
 
@@ -88,15 +85,23 @@ public class ServiceRequestEvaluationService {
     public void answerQuestionnaire(Long id, User user, List<AnswerDTO> answersDTO) {
         ServiceRequest serviceRequest = serviceRequestRepository.findById(id)
                 .orElseThrow(ServiceRequestNotFoundException::new);
+        checkAccessToQuestionnaire(serviceRequest, user);
+        answersDTO.forEach(answerDTO -> answerService.create(answerDTO, user, serviceRequest));
+    }
+
+    public void checkAccessToQuestionnaire(ServiceRequest serviceRequest, User user) {
+        List<Answer> answers = answerService.getAnswersByServiceRequestId(serviceRequest.getId());
+        int customerQuestionnaireSize = (int) answers.stream()
+                .filter(answer -> answer.getQuestion().getAnswererType() == UserType.CUSTOMER).count();
+        int specialistQuestionnaireSize = answers.size() - customerQuestionnaireSize;
         if ((serviceRequest.getStatus() != ServiceRequestStatus.DONE)
                 // check if user belongs to the service request //todo refactor
                 || !(user.getEmail().equals(serviceRequest.getCustomer().getEmail())
                 || user.getEmail().equals(serviceRequest.getAcceptedSpecialist().getEmail()))
                 // check if user answered questionnaire before
-                || ((user.getType() == UserType.CUSTOMER && serviceRequest.getCustomerQuestionnaire().size() > 0)
-                || (user.getType() == UserType.SPECIALIST && serviceRequest.getSpecialistQuestionnaire().size() > 0))) {
+                || ((user.getType() == UserType.CUSTOMER && customerQuestionnaireSize > 0)
+                || (user.getType() == UserType.SPECIALIST && specialistQuestionnaireSize > 0))) {
             throw new UserNotAllowedException();
         }
-        answersDTO.forEach(answerDTO -> answerService.create(answerDTO, user, serviceRequest));
     }
 }
