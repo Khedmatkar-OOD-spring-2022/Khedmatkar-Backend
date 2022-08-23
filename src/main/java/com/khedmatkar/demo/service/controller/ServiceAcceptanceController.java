@@ -1,6 +1,7 @@
 package com.khedmatkar.demo.service.controller;
 
 
+import com.khedmatkar.demo.account.entity.UserType;
 import com.khedmatkar.demo.account.service.AccountService;
 import com.khedmatkar.demo.account.entity.Customer;
 import com.khedmatkar.demo.account.entity.Specialist;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 
 @RestController
@@ -31,6 +33,7 @@ public class ServiceAcceptanceController {
         this.specialistAcceptanceService = specialistAcceptanceService;
     }
 
+    @RolesAllowed(UserType.Role.SPECIALIST)
     @PostMapping("/{id}/specialist/accept")
     @Transactional
     public void specialistAccept(
@@ -45,6 +48,8 @@ public class ServiceAcceptanceController {
         specialistAcceptanceService.handleSpecialistAcceptOrReject(command);
     }
 
+
+    @RolesAllowed(UserType.Role.SPECIALIST)
     @PostMapping("/{id}/specialist/reject")
     @Transactional
     public void specialistReject(
@@ -60,6 +65,7 @@ public class ServiceAcceptanceController {
     }
 
 
+    @RolesAllowed(UserType.Role.CUSTOMER)
     @PostMapping("/{id}/customer/accept")
     @Transactional
     public void customerAccept(
@@ -74,6 +80,8 @@ public class ServiceAcceptanceController {
         customerAcceptanceService.handleAcceptOrReject(command);
     }
 
+
+    @RolesAllowed(UserType.Role.CUSTOMER)
     @PostMapping("/{id}/customer/reject")
     @Transactional
     public void customerReject(
