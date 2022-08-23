@@ -7,12 +7,12 @@ import com.khedmatkar.demo.account.repository.AdminRepository;
 import com.khedmatkar.demo.account.repository.CustomerRepository;
 import com.khedmatkar.demo.account.repository.SpecialistRepository;
 import com.khedmatkar.demo.account.repository.UserRepository;
-import org.springframework.http.HttpStatus;
+import com.khedmatkar.demo.exception.BadUserTypeException;
+import com.khedmatkar.demo.exception.UserAlreadyExistsException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
@@ -38,9 +38,7 @@ public class RegistrationController {
     @PostMapping("/register")
     public void registerUser(@RequestBody @Valid UserDTO dto) {
         if (userRepository.existsByEmail(dto.email)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "another user with this email exists"
-            );
+            throw new UserAlreadyExistsException();
         }
 
         var user = fillUserInfo(dto);
@@ -68,9 +66,7 @@ public class RegistrationController {
             userType = UserType.ADMIN;
             user = new Admin();
         } else {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "bad user type"
-            );
+            throw new BadUserTypeException();
         }
 
         var encodedPassword = PasswordEncoderFactories

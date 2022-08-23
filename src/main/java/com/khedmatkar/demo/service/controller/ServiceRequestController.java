@@ -2,14 +2,11 @@ package com.khedmatkar.demo.service.controller;
 
 import com.khedmatkar.demo.exception.ServiceRequestNotFoundException;
 import com.khedmatkar.demo.service.dto.ServiceRequestListViewDTO;
-import com.khedmatkar.demo.service.entity.ServiceRequestDetailViewDTO;
 import com.khedmatkar.demo.service.repository.ServiceRequestRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 

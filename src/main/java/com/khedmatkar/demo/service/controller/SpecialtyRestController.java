@@ -1,13 +1,12 @@
 package com.khedmatkar.demo.service.controller;
 
+import com.khedmatkar.demo.exception.ParentSpecialtyNotFoundException;
 import com.khedmatkar.demo.exception.SpecialtyHasChildSpecialtiesException;
 import com.khedmatkar.demo.exception.SpecialtyNotFoundException;
 import com.khedmatkar.demo.service.dto.SpecialtyDTO;
 import com.khedmatkar.demo.service.entity.Specialty;
 import com.khedmatkar.demo.service.repository.SpecialtyRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
@@ -60,11 +59,8 @@ public class SpecialtyRestController {
                 .build();
         Specialty parent = null;
         if (dto.parentId != null) {
-            parent = specialtyRepository.findById(dto.parentId).orElseThrow(
-                    () -> new ResponseStatusException(
-                            HttpStatus.BAD_REQUEST, "parent not found"
-                    )
-            );
+            parent = specialtyRepository.findById(dto.parentId)
+                    .orElseThrow(ParentSpecialtyNotFoundException::new);
         }
         specialty.setParent(parent);
         specialtyRepository.save(specialty);

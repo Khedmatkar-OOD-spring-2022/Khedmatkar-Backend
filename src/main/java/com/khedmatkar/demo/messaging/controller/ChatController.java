@@ -2,6 +2,8 @@ package com.khedmatkar.demo.messaging.controller;
 
 import com.khedmatkar.demo.account.entity.UserType;
 import com.khedmatkar.demo.account.service.AccountService;
+import com.khedmatkar.demo.exception.ChatIsClosedException;
+import com.khedmatkar.demo.exception.ChatNotFoundException;
 import com.khedmatkar.demo.exception.ServiceRequestNotFoundException;
 import com.khedmatkar.demo.messaging.dto.ChatDTO;
 import com.khedmatkar.demo.messaging.dto.MessageDTO;
@@ -11,10 +13,8 @@ import com.khedmatkar.demo.messaging.entity.Message;
 import com.khedmatkar.demo.messaging.repository.ChatRepository;
 import com.khedmatkar.demo.messaging.repository.MessageRepository;
 import com.khedmatkar.demo.service.repository.ServiceRequestRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
@@ -45,11 +45,9 @@ public class ChatController {
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
             @RequestBody MessageDTO dto) {
         var sender = accountService.findConcreteUserClassFromUserDetails(userDetails);
-        var chat = chatRepository.findById(dto.chatId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "chat not found")
-        );
-        if (chat.getStatus() == ChatStatus.CLOSED){
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "chat is closed");
+        var chat = chatRepository.findById(dto.chatId).orElseThrow(ChatNotFoundException::new);
+        if (chat.getStatus() == ChatStatus.CLOSED) {
+            throw new ChatIsClosedException();
         }
         messageRepository.save(Message.builder()
                 .sender(sender)
@@ -62,9 +60,7 @@ public class ChatController {
     @GetMapping("/{id}")
     @Transactional
     public ChatDTO getChat(@PathVariable(name = "id") Long id) {
-        Chat chat = chatRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "chat not found")
-        );
+        Chat chat = chatRepository.findById(id).orElseThrow(ChatNotFoundException::new);
         return ChatDTO.builder()
                 .chatId(chat.getId())
                 .status(String.valueOf(chat.getStatus()))
