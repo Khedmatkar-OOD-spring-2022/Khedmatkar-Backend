@@ -93,7 +93,7 @@ public class CertificateRestController {
     @Secured({"ROLE_SPECIALIST"})
     public void addCertificate(
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
-            @RequestParam(name = "file") MultipartFile file,
+            @RequestParam(name = "file", required = false) MultipartFile file,
             @RequestParam(name = "specialtyId") Long id) throws IOException {
 
         var specialist = (Specialist) accountService.findConcreteUserClassFromUserDetails(userDetails);
@@ -118,6 +118,7 @@ public class CertificateRestController {
     }
 
     @DeleteMapping("/{certificateId}")
+    @RolesAllowed(UserType.Role.SPECIALIST)
     @Transactional
     public void removeCertificate(@PathVariable Long certificateId,
                                   @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails) {
